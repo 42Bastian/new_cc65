@@ -3,7 +3,8 @@
    This software is copyright 1989 by John Dunning.  See the file
    'COPYLEFT.JRD' for the full copyright notice.
 */
-
+#ifndef SYMTAB_H
+#define SYMTAB_H
 /* stuff for symbol table */
 
 #ifndef _TYPES_
@@ -46,3 +47,4 @@ struct sym
 extern SYM * find_sym();
 extern SYM * assign_sym();
 extern void NextLocal();
+#endif /*  SYMTAB_H */

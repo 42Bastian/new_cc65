@@ -6,10 +6,10 @@
 #            97/11/25 B.Schick
 
 CC=gcc
-CFLAGS = -m486 -O3 -Wall -ffast-math -fomit-frame-pointer
-LDFLAGS= -s
+CFLAGS = -O3 -Wall -ffast-math -fomit-frame-pointer  -fsigned-char
+LDFLAGS=
 BINDIR = ~/bin
-CP = cp 
+CP = cp
 RM = rm -f
 EXT = #.exe
 
@@ -44,12 +44,18 @@ $(OBJS) : $(H_SRCS)
 
 $(XOBJS) : $(H_SRCS)
 
-xopt$(EXT) : xopt.cc
-	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ xopt.cc
+xopt$(EXT) : xopt.c
+	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $<
 
 install : $(EXECS)
 	$(CP) $(EXECS) $(BINDIR)
 
-clean : 
+clean :
 	$(RM) *.o core $(EXECS) compile.err errlist *.bak
 
+.ONESHELL:
+indent:
+	@for i in $(C_SRCS); do
+	 echo $$i
+	 indent -i2 -nfc1 -ldi2 -di2 $$i
+	done

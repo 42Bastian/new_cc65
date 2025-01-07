@@ -100,8 +100,8 @@ void PError(char *pfx,char * msg)
   if (verbose)
   {
     printf("line: %s\n", line);
-    printf("curtok = %d\n", curtok);
-    printf("nxttok = %d\n", nxttok);
+    printf("curtok = %lu\n", curtok);
+    printf("nxttok = %lu\n", nxttok);
   }
 
   if (++errcnt > 6)
@@ -116,8 +116,8 @@ void fatal(char * msg)
 {
   printf("fatal error: %s\n", msg);
   printf("line: %s\n", line);
-  printf("curtok = %d\n", curtok);
-  printf("nxttok = %d\n", nxttok);
+  printf("curtok = %lu\n", curtok);
+  printf("nxttok = %lu\n", nxttok);
   printf("Can't recover from previous errors:  Good-bye!\n");
   exit(2);
 }
@@ -130,6 +130,6 @@ void Warning(char * msg)
 {
   printf("warning: %s\n", msg);
   printf("line: %s\n", line);
-  printf("curtok = %d\n", curtok);
-  printf("nxttok = %d\n", nxttok);
+  printf("curtok = %lu\n", curtok);
+  printf("nxttok = %lu\n", nxttok);
 }

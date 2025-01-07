@@ -15,13 +15,14 @@ GLOBAL = ../runtime/global.m65
 
 .SUFFIXES: .com .obj .m65 .c
 
-.c.obj:
-	$(CC) $<
+.ONESHELL:
+%.obj: %.c
+	@$(CC) $<
 	xopt $*.m65
 	$(AS) -o $@ $(GLOBAL) ../runtime/labels.m65 $*.m65
 	$(RM) $*.m65
 
-.m65.obj: $(GLOBAL)
+%.obj: %.m65 $(GLOBAL)
 	$(AS) -o $@  $(GLOBAL) ../runtime/labels.m65 $<
 
 C_OBJS = atoi.obj iscntrl.obj isprint.obj itox.obj atoib.obj isalnum.obj \
@@ -37,18 +38,19 @@ C_OBJS = atoi.obj iscntrl.obj isprint.obj itox.obj atoib.obj isalnum.obj \
 
 M65_OBJS =isalpha.obj isodigit.obj isdigit.obj iswhite.obj \
 	bzero.obj bcopy.obj strchr.obj toupper.obj strlen.obj strcpy.obj\
-	strcmp.obj mul.obj div.obj 
+	strcmp.obj mul.obj div.obj
 
 #	itoa.obj
 #	stdio.obj frename.obj fdelete.obj close.obj closeall.obj cputc.obj \
 #	cgetc.obj cgets.obj read.obj write.obj rwcommon.obj tprintf.obj \
 #	heap.obj getch.obj parselin.obj tolower.obj \
-	
-install : c.olb 
+
+install : c.olb
+	$(CP) c.olb $(BINDIR)
 
 c.olb : $(C_OBJS) $(M65_OBJS)
 	$(AR) a c.olb $?
-	$(CP) c.olb $(BINDIR)
+
 clean:
 	$(RM) *.obj
 	$(RM) *.bak

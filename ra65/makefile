@@ -2,11 +2,11 @@
 #
 # intruder@hacktic.nl
 
-CFLAGS = -pipe -O3 -m486 -fomit-frame-pointer -Wall -DUNIX
+CFLAGS = -pipe -O3 -fomit-frame-pointer -Wall -DUNIX
 CC=gcc
-LDFLAGS= -s
+LDFLAGS=
 BINDIR=../bin
-CP = cp 
+CP = cp
 RM = rm -f
 EXE = #.exe
 OBJS = a65.o symtab.o parse.o opcode.o util.o list.o xpseudo.o \
@@ -17,7 +17,7 @@ EXECS = ra65$(EXE) printobj$(EXE) link65$(EXE) libr65$(EXE) bin2obj$(EXE)
 
 all:	$(EXECS)
 
-ra65$(EXE) :   $(OBJS) version.o makefile 
+ra65$(EXE) :   $(OBJS) version.o makefile
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(OBJS) version.o
 
 version.o: $(OBJS) makefile

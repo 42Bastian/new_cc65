@@ -154,7 +154,7 @@ struct hashent
   struct hashent * link;
   struct
   {
-    int g;
+    uintptr_t g;
     int l;
   }data;
   char name[1];
@@ -258,10 +258,10 @@ extern char *	fin;
 extern char	fname[80];
 
 
-extern int	curtok;
-extern int	curval;
-extern int	nxttok;
-extern int	nxtval;
+extern uintptr_t curtok;
+extern uintptr_t curval;
+extern uintptr_t nxttok;
+extern uintptr_t nxtval;
 
 extern char	optimize;	/* optimize flag */
 extern char	verbose;	/* verbose flag */
@@ -274,8 +274,8 @@ extern char *	incl_dir;	/* dir for include files */
 extern char	source;		/* put source in m65 file as comments */
 
 
-char *	Gmalloc();
-char *	Lmalloc();
+char *	Gmalloc(int );
+char *	Lmalloc(int );
 
 
 #define dbgprintf(foo,bar) {}

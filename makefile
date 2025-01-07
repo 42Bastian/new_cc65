@@ -2,58 +2,31 @@
 
 all	: info
 
-info: 
+info:
 	@echo use :
 	@echo "'make install' to install the package"
 	@echo "'make demos'   to make the demos"
 	@echo "'make _src'    to zip the sources"
-	@echo "'make _bin'    to zip the binaries"       
+	@echo "'make _bin'    to zip the binaries"
 
-install: 
-	@cd cc65 ;\
-	$(MAKE) install ;\
-	cd ..
-	@cd ra65 ;\
-	$(MAKE) install ;\
-	cd ..
-	@cd runtime;\
-	$(MAKE) install;\
-	cd ..
-	@cd libsrc ;\
-	$(MAKE) install ;\
-	cd ..
-	@cd libsrc/lynx;\
-	$(MAKE) install;\
-	cd ../..
+install:
+	@$(MAKE) -C cc65 install
+	$(MAKE) -C ra65 install
+	$(MAKE) -C runtime install
+	$(MAKE) -C libsrc install
+	$(MAKE) -C libsrc/lynx install
 demos:
-	@cd examples.c65;\
-	$(MAKE);\
-	cd demos;\
-	$(MAKE);\
-	cd ../..
+	@$(MAKE) -C examples.c65
+	$(MAKE) -C examples.c65/demos
 
 clean:
-	@cd cc65;\
-	$(MAKE) clean;\
-	cd ..
-	cd ra65;\
-	$(MAKE) clean;\
-	cd ..
-	@cd libsrc;\
-	$(MAKE) clean;\
-	cd ..
-	@cd libsrc/lynx;\
-	$(MAKE) clean;\
-	cd ../..
-	@cd examples.c65/demos;\
-	$(MAKE) clean;\
-	cd ..;\
-	$(MAKE) clean;\
-	cd ..
-	cd include;\
-	rm -f *.bak;\
-	cd ..
-
+	@$(MAKE) -C cc65 clean
+	$(MAKE) -C ra65 clean
+	$(MAKE) -C libsrc clean
+	$(MAKE) -C libsrc/lynx clean
+	$(MAKE) -C examples.c65 clean
+	$(MAKE) -C examples.c65/demos clean
+	rm -f include/*.bak
 _src:
 	@touch bin/dummy
 	@touch lib/dummy

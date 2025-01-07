@@ -58,7 +58,7 @@ int new_ok;
 //
 //  printf("findsym %s\n",name);
   idx = hash(name);
-  
+
   for (sym_p = symtab[idx] ; sym_p ; sym_p = sym_p->next)
 	  if (!strcmp(sym_p->name, name))
 	    break;
@@ -83,7 +83,7 @@ int new_ok;
   sym_p->nbr = -1;
   sym_p->defline = -1;
   sym_p->local = -1;
-  
+
   if ( name[0] == '.' )
   {
     sym_p->flags |= LOCAL;
@@ -94,7 +94,7 @@ int new_ok;
   symtab[idx] = sym_p;
 
 //    printf("findsym:(%s)\n",sym_p->name);
-  
+
   return(sym_p);
 }
 
@@ -106,7 +106,7 @@ int no_redef;
   SYM * sym_p;
 
   sym_p = find_sym(name, 1);
-  
+
   if (no_redef && (sym_p->flags & DEFINED) && (pass != gen_n_passes()-1))
   {
     barf("Label already defined at line %d",sym_p->defline,0,0);
@@ -114,8 +114,8 @@ int no_redef;
   }
 	if (sym_p->value != value && (pass != gen_n_passes()-1) )
 		barf("'%s' redefined: %X vs %X\n",(int) name,(int)sym_p->value, value);
-		
-//printf("assign_sym:%s %02x %d\n",sym_p->name,sym_p->flags,(int)sym_p->value);  
+
+//printf("assign_sym:%s %02x %d\n",sym_p->name,sym_p->flags,(int)sym_p->value);
 
   sym_p->defline = line_nbr;
   sym_p->value = value;
@@ -132,7 +132,7 @@ int no_redef;
   {
     if ( suffix )
       barf("No suffix allowed for local labels \n",0,0,0);
-      
+
     sym_p->flags |= LOCAL;
     sym_p->local = local_count;
   }
@@ -141,11 +141,11 @@ int no_redef;
     sym_p->flags |= GLOBAL;
     NextLocal();
   }
-  
-  
-//printf("assign_sym:%s %02x %d\n",sym_p->name,sym_p->flags,(int)sym_p->local);  
+
+
+//printf("assign_sym:%s %02x %d\n",sym_p->name,sym_p->flags,(int)sym_p->local);
 //printf("decl:(%s,%d) at %d\n",sym_p->name,value,line_nbr);
-  
+
   return(sym_p);
 }
 
@@ -195,7 +195,7 @@ void describe_symtab()
 }
 
 void map_syms(void (* fun)())
- 
+
 {
   SYM * sym_p;
   int i;
@@ -216,13 +216,13 @@ int find_udef()
   int i;
   int udef = 0;
   int save_line = line_nbr;
-  
+
   for (i = 0 ; i < HASHMOD ; i++)
     for (sym_p = symtab[i]; sym_p ; )
     {
 //      printf("sym(%s) flags(%02x)\n",sym_p->name,sym_p->flags);
-      
-      if ( (sym_p->flags & USED) && !(sym_p->flags & DEFINED) )         
+
+      if ( (sym_p->flags & USED) && !(sym_p->flags & DEFINED) )
       {
         line_nbr = sym_p->line;
 //not yet        strcpy(CurrentFile,in_name[sym_p->nbr]);
@@ -259,4 +259,3 @@ void dump_syms()
   fclose(f);
 }
 #endif
-

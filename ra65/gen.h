@@ -6,8 +6,10 @@
 
 /* entry pts for code generator */
 
-extern void genlit();
-extern void genbyte();
-extern void genword();
-extern void gen_label();
-extern void gen_n_passes();
+#include "symtab.h"
+
+void genlit(char byte);
+void genbyte(int byte, int flags, SYM * sym);
+void genword(int word, int flags, SYM * sym);
+void gen_label();
+int gen_n_passes();

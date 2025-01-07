@@ -1,4 +1,4 @@
-;
+; -*-asm-*-
 ; Runtime code for cc65.
 ; assemble with global.m65
 
@@ -16,7 +16,7 @@ tmp2    ds 1
 tmp3    ds 1
 tmp4    ds 1
 
-runtime_save_size ds 1 
+runtime_save_size ds 1
 
 ; 42BS
 ; shadow-register
@@ -30,11 +30,11 @@ __sprsys ds 1
                 global sp,sreg,ptr1,ptr2,ptr3
                 global tmp1,tmp2,tmp3,tmp4
 		global runtime_save_size
-                
+
                 global __iodat,__iodir,__viddma,__sprsys
 
 		text
-		
+
         global __start 		; programs lo memory boundary
         xref __stacktop,_main	; external refs.
 
@@ -100,17 +100,17 @@ __start:
 ;
         ldy     #0      ; 0 args
         jsr     _main   ; go!
-        
+
         .globl  _exit
 _exit:
 
 ;
 ; fall into BRK
 ;
-        brk #0              
+        brk #0
 noreturns:
         bra     noreturns
-        
+
 ; ---------------------------
 ; routines for inc/dec'ing sp
 ; ----------------------------
@@ -128,7 +128,7 @@ incsp1:
         bne     *+4
         inc     sp+1
         rts
-        
+
         .globl  incsp3  ; inc sp by 3
 incsp3:
         ldy     #3
@@ -268,7 +268,7 @@ incax4:
 incax3:
         ldy     #3
 	global addaxy
-addaxy:	
+addaxy:
         .globl  indexax ; index in Y, add Y to AX
 indexax:
         sty     tmp1
@@ -349,7 +349,7 @@ locysp_1:
 plocysp:
         jsr     locysp
         lbra     pushax
-        
+
         .globl  plocidx ; push location of AX@(Y)
 plocidx:
         jsr     indexax
@@ -391,7 +391,7 @@ pushax:
 				sta sp
 				bcs .l1
 				dec sp+1
-.l1     tya				
+.l1     tya
         sta (sp)        ; sta (sp)   KAO    10 cycles faster
         pha
         txa             ;                 KAO    -1 for sta (sp)
@@ -407,7 +407,7 @@ popax:
         tax             ;                 KAO    -3 for pha      -2 for iny
         lda (sp)        ; lda (sp)   KAO    -4 for pla
         lbra     incsp2 ; bump stack and return
-        
+
         .globl  popsreg ; pop stack into SREG
 popsreg:
         pha             ; save A
@@ -418,7 +418,7 @@ popsreg:
         sta     sreg+1  ; store it
         pla             ; get A back
         lbra     incsp2 ; bump stack and return
-        
+
  ;       .globl  pushwysp        ; push a word from SP@(Y)
 pushwysp:
         lda     (sp),y  ; get lo byte
@@ -466,7 +466,7 @@ staspic:
 	ply
         lda     tmp1
         sta     (ptr1),y
-        rts     
+        rts
 
         .globl  staxysp
 staxysp:
@@ -481,7 +481,7 @@ staxysp:
 staysp:
         sta     (sp),y
         lbra     tstax
-	
+
         .globl  staxspp ; store AX thru (sp), and pop
 staxspp:
        pha             ; save A
@@ -581,7 +581,7 @@ ldaxi:
         tax
         lda     (ptr1)
         lbra    tstax   ; return cond codes
-        
+
 	global ldauidx
 ldauidx:
 	jsr indexax
@@ -590,12 +590,12 @@ ldauidx:
 ;
         .globl  ldaui   ; unsigned edition
 ldaui:
-        sta     ptr1 	;tmpptr 
+        sta     ptr1 	;tmpptr
         stx     ptr1+1
         lda     (ptr1)
         ldx     #$00
         lbra    tstax
-        
+
         .globl  ldaidx  ; load A from (AX)Y
 ldaidx:
         jsr     indexax ; compute address
@@ -616,7 +616,7 @@ ldai:
         bpl     ldai_1  ; pos...
         dex
         rts
-ldai_1: 
+ldai_1:
 ;>         lbra     tstax           ; return cond codes
 
 ;
@@ -650,7 +650,7 @@ aslax:
         tax
         pla
         lbra tstax
-        
+
         .globl  asltos
 asltos:
         cpx     #0      ; X nonzero?
@@ -667,7 +667,7 @@ aslaxy:
         lbeq tstax      ; done shifting
         cpy #8
         beq asl8
-        stx     tmp1    ; use A and tmp1 as register    
+        stx     tmp1    ; use A and tmp1 as register
 aslsreg_1:
         asl     A       ; shift A
         rol     tmp1
@@ -683,7 +683,7 @@ aslsreg_0:
 asl8:	tax
 	lda #0
 	lbra tstax
-	
+
 
         .globl  asrax           ; shift AX right 1
 asrax:
@@ -734,38 +734,38 @@ addtos:
         tax
         tya
         lbra     tstax   ; return status for optimized code
-        
+
 	global decax3
 decax3:	ldy #3
 	bra subaxy
-	
+
 	global decax4
 decax4	ldy #4
 	bra subaxy
-	
+
 	global decax5
 decax5	ldy #5
 	bra subaxy
-	
+
 	global decax6
 decax6	ldy #6
 	bra subaxy
-	
+
 	global decax7
 decax7	ldy #7
 	bra subaxy
-	
+
 	global decax8
 decax8	ldy #8
         .globl subaxy
-subaxy: 
+subaxy:
         sty sreg
         sec
         sbc sreg
         lbcs tstax
         dex
         lbra tstax
-        
+
         .globl  subtos
 subtos:
         jsr     popsreg ; sub AX from SREG, result in AX
@@ -791,7 +791,7 @@ or_tos:
         tax
         tya
         lbra     tstax   ; return status for optimized code
-	
+
         .globl  xortos
 xortos:
         jsr     popsreg ; for optimized code
@@ -823,7 +823,7 @@ axzerop:
         cpx     #0
         bne     return1
         bra     return0
-        
+
         .globl  toseqax
 toseqax:
         jsr     popsreg ; for optimized code
@@ -922,7 +922,7 @@ sreggtax:               ; AX < SR
         cmp     sreg
         bcc     return1 ; < , return 1
         bra     return0
-        
+
         .globl  tosugtax
 tosugtax:
         jsr     popsreg ; for optimized code
@@ -948,11 +948,11 @@ sreggeax:               ; AX <= SR
         beq     return1
         bra     return0
 
-        
+
         .globl  tosugeax
 tosugeax:
         jsr     popsreg ; for optimized code
-        
+
         .globl  sregugeax       ; AX u<= SREG
 sregugeax:
         cpx     sreg+1
@@ -1018,13 +1018,13 @@ SaveRegs::
 	sta tmp1
 	pla
 	sta tmp1+1
-SaveRegs1	
+SaveRegs1
 	lda 0,x
 	pha
 	dex
 	dey
 	bne SaveRegs1
-	
+
 	lda tmp1+1
 	pha
 	lda tmp1
@@ -1045,13 +1045,13 @@ _RestoreRegs1::
 	inx
 	dey
 	bne _RestoreRegs1
-	
+
 	lda ptr1+1
 	pha
 	lda ptr1
 	pha
 	rts
-	
+
         .globl  exitfun ; exit a function.  pop stack and rts
 exitfun:
 	sta tmp1
@@ -1060,7 +1060,7 @@ exitfun:
 	beq exitfun1
 	ldx #8
 	jsr RestoreRegs
-exitfun1:        
+exitfun1:
         lda (sp)        ; that's the pushed arg count
         ina             ; 42BS
         asl     A       ; loses big for large arg counts...
@@ -1127,7 +1127,7 @@ casejump:
         pla
         sta ptr1+1
 case1:
-        ldy     #2      	; first see if at end        
+        ldy     #2      	; first see if at end
         lda     (ptr1),y        ; test address byte hi
         beq     case9   	; yes =>
 
@@ -1149,7 +1149,7 @@ case2a  cmp     #0     		; match switchval lo?
         sta 	ptr1
         stx 	ptr1+1
         jmp 	(ptr1)
-        
+
 ;>        sta     ptr2+1  	; stuff in ptr to jump thru
 ;>        dey
 ;>        lda     (ptr1),y
@@ -1165,7 +1165,7 @@ case3:          ; no match, try next case clause
         inc     ptr1+1  ; deal with carry
         lbra     case1   ; and go try again
 
-case9:        
+case9:
 ; oops, we're out of cases.  compute return address; 2 + ptr1
         clc
         lda     ptr1    ; get lo byte
@@ -1201,7 +1201,7 @@ mulaxy
 	ora #$80
 	sta $fc92
 	pla
-	
+
 	sty $fc52
 	stz $fc53
 	sta $fc54
@@ -1215,12 +1215,12 @@ mulaxy1
 	sty $fc92
 	plp		; 0912
 	lbra tstax
-	
+
         .globl  multos
 multos:
 	php
 	sei
-	
+
         tay                 ; save A
         lda __sprsys
         ora #$80
@@ -1238,9 +1238,9 @@ smul1:
         sta $fc92
         lda $fc60
         ldx $fc61
-        
+
         plp
-        
+
         lbra tstax
 ;
 ; signed divide (uses Suzy)
@@ -1249,17 +1249,17 @@ smul1:
 divaxy:
 	php
 	sei
-	
+
 	sty $fc56
 	stz $fc57
 	stz tmp1
 	bra divaxy1
-	
+
         .globl  divtos
 divtos:
 	php
 	sei
-	
+
         stz     tmp1
         jsr     tstax   ; AX zero?
         beq     xsdiv0a  ; yup, give up now
@@ -1271,7 +1271,7 @@ xsdiv1:
         stx     $fc57   ; divider
 
         jsr popax
-divaxy1        
+divaxy1
         jsr     tstax   ; what sort of value?
         beq     xsdiv0  ; zero, we lose
         bpl     xsdiv2  ; positive, it's ok
@@ -1315,7 +1315,7 @@ xmodtos0:
 modaxy
 	php
 	sei
-	
+
 	sty ptr1
 	stz ptr1+1
 	stz tmp3
@@ -1323,16 +1323,16 @@ modaxy
 	sta sreg
 	stx sreg+1
 	bra modaxy1
-	
+
 ;>        global modtoa
 ;>modtoa
-;>        ldx #0  
+;>        ldx #0
         .globl  modtos
 
 modtos:
 	php
 	sei
-	
+
 	jsr popsreg
 
 xmodtos:                ;     result in AX, remainder in SREG
@@ -1474,7 +1474,7 @@ sloop:
 
         	data
 		global SuzyInitReg
-        	
+
 SuzyInitReg   .byte $28,$2a,$04,$06,$92,$83,$90
 SuzyInitData  .byte $7f,$7f,$00,$00,$24,$f3,$01
 ********************

@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 
 /*
 char char_upcase(c)
@@ -19,51 +20,55 @@ char c;
 }
 */
 
-int string_equal(s1, s2)
-char * s1, * s2;
+int
+string_equal(s1, s2)
+  char *s1, *s2;
 {
   if (strlen(s1) != strlen(s2))
-	return(0);
-  for ( ; *s1 && *s2 ; ++s1, ++s2)
-	if (toupper(*s1) != toupper(*s2))
-		return(0);
-  return(1);
+    return (0);
+  for (; *s1 && *s2; ++s1, ++s2)
+    if (toupper(*s1) != toupper(*s2))
+      return (0);
+  return (1);
 }
 
-int read_line(f, l)
+int
+read_line(f, l)
 FILE * f;
-char * l;
+  char *l;
 {
   int c;
   int ok;
 
   ok = 0;
-  for ( ; ((c = fgetc(f)) != EOF) ; )
-	{
-/* printf("read-char '%c' %X ptr %X\n", c, c, l); */
-	ok = 1;
-	if (c == '\n')
-		break;
-	if (!((c == '\r') || (c == '\f')))	/* ^L */
-	 *l++ = c;
-	}
+  for (; ((c = fgetc(f)) != EOF);) {
+    /* printf("read-char '%c' %X ptr %X\n", c, c, l); */
+    ok = 1;
+    if (c == '\n')
+      break;
+    if (!((c == '\r') || (c == '\f')))	/* ^L */
+      *l++ = c;
+  }
   *l = '\0';
-  return(ok);
+  return (ok);
 }
 
-char * frob_name(char *name)
+char *
+frob_name(char *name)
 {
-  return(name);
+  return (name);
 }
 
 
 int filepos;
-void save_pos(FILE *f)
+void
+save_pos(FILE * f)
 {
   filepos = ftell(f);
 }
 
-void restore_pos(FILE *f)
+void
+restore_pos(FILE * f)
 {
-  fseek(f,filepos,SEEK_SET);
+  fseek(f, filepos, SEEK_SET);
 }

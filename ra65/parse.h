@@ -20,5 +20,5 @@ struct parse
 	int comment_column;	/* where the comment started */
 	};
 
-extern void parse_line();		/* parse a line into a parse struct */
-
+/* parse a line into a parse struct */
+void parse_line(char * line,struct parse * p,int macrodef);

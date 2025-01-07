@@ -1,6 +1,6 @@
 /*
-   Code generator routines for CC65.  These are called by various
-   parts of the compiler to generate primitive operations.
+  Code generator routines for CC65.  These are called by various
+  parts of the compiler to generate primitive operations.
 */
 
 /* changed jmp into lbra 42BS */
@@ -13,59 +13,66 @@
 #include "cc65.h"
 #include "code-65.h"
 
-
 /* io.c */
 void flushout();
 void outchar(char c);
 
 /* preproc.c */
-char * findmac();
+char * findmac(char * sname);
+
+void lda_helper(unsigned char *typestring, char *ext);
 
 /* end of prototypes */
 /* output a string */
 
-void ot(register char * str)
+void
+ot(register char *str)
 {
-  while ( *str )
-    {
-      outchar(*str);
-      ++str;
-    }
+  while (*str) {
+    outchar(*str);
+    ++str;
+  }
 }
 
-/* print newline */ 
-inline void nl()
+/* print newline */
+inline void
+nl()
 {
   outchar('\n');
 }
 
 /* output a string, add a newline */
-void ol(char * str)
+void
+ol(char *str)
 {
   ot(str);
   nl();
 }
 
-void oljsr(char * str)
+void
+oljsr(char *str)
 {
   ot("\tjsr\t");
   ol(str);
 }
 
-void oljsrpop(char * str)
+void
+oljsrpop(char *str)
 {
   oljsr(str);
   popsp();
 }
 
 /* helper for konst1 */
-void olstrdnl(char * str,int  num)
+void
+olstrdnl(char *str, int num)
 {
   ot(str);
   outdecnl(num);
 }
 
-void outabsdecl(char *n,int value)
+void
+outabsdecl(char *n, int value)
 {
   outchar('_');
   ot(n);
@@ -78,39 +85,39 @@ static char ldx[] = "\tldx\t#";
 static char xxhi, xxlo;
 
 /* load konst into AX in such a way as to set cond codes correctly */
-void olxxxhi()
+void
+olxxxhi()
 {
   olstrdnl(ldx, xxhi);
 }
 
-void olxxxlo()
+void
+olxxxlo()
 {
   olstrdnl(lda, xxlo);
 }
 
-void konst1(int k)
+void
+konst1(int k)
 {
   xxhi = k >> 8;
   xxlo = k & 0xFF;
-  
-  if (xxhi == xxlo)
-    {
-      olxxxlo();
-      ol("\ttax");
-    }
-  else if (xxhi)
-    {
-      olxxxlo();
-      olxxxhi();
-    }
-  else
-    {
-      olxxxhi();
-      olxxxlo(); /* this loses some; generates spurious negative... */
-    }
+
+  if (xxhi == xxlo) {
+    olxxxlo();
+    ol("\ttax");
+  } else if (xxhi) {
+    olxxxlo();
+    olxxxhi();
+  } else {
+    olxxxhi();
+    olxxxlo();                  /* this loses some; generates spurious
+                                 * negative... */
+  }
 }
 
-void konst3(int k)
+void
+konst3(int k)
 {
   olstrdnl("\tldy\t#", k);
 }
@@ -119,18 +126,16 @@ char efn[] = {'e', 'n', 't', 'e', 'r', 'f', 'u', 'n'};
 char efn_n = ' ';
 char efn_0 = 0;
 
-void startfun(char * name,int flag)
+void
+startfun(char *name, int flag)
 {
   if (n_funargs == -1)
     printf("Internal error! no argcount?\n");
-  outgblc(name); /* print a global name with colon */
+  outgblc(name);                /* print a global name with colon */
   if (findmac("FIXARGC"))
-    if ( n_funargs <= 8 )
-    {
+    if (n_funargs <= 8) {
       efn_n = n_funargs + '0';
-    }
-    else
-    {
+    } else {
       konst3(n_funargs);
       efn_n = 0;
     }
@@ -141,83 +146,86 @@ void startfun(char * name,int flag)
 }
 
 /* util function */
-inline int char_t_p(char * tptr)
+inline int
+char_t_p(char *tptr)
 {
   return ((tptr[0] & ~T_UNSIGNED) == T_CHAR);
 }
 
 /* Fetch a static memory cell into the primary register */
-void getmem(char * lbl,char * tptr,char test_p)	/* jrd added test_p */
-{
+void
+getmem(char *lbl, char *tptr, char test_p)
+{                               /* jrd added test_p */
   if (char_t_p(tptr))
-    if (tptr[0] & T_UNSIGNED)
-    {
-      ot("\tldau\t"); outgblnl(lbl);
+    if (tptr[0] & T_UNSIGNED) {
+      ot("\tldau\t");
+      outgblnl(lbl);
+    } else {
+      ot("\tldas\t");
+      outgblnl(lbl);
     }
-    else
-    {
-      ot("\tldas\t"); outgblnl(lbl);
-    }
-  else				/* loading word-sized thing */
-    if (test_p)
-    {
-      ot("\tlda\t"); outgblnl(lbl);
-      ot("\tora\t"); outgbl(lbl); ol("+1");
-    }
-    else
-    {
-      ot("\tldax\t"); outgblnl(lbl);
+  else                          /* loading word-sized thing */
+    if (test_p) {
+      ot("\tlda\t");
+      outgblnl(lbl);
+      ot("\tora\t");
+      outgbl(lbl);
+      ol("+1");
+    } else {
+      ot("\tldax\t");
+      outgblnl(lbl);
     }
 }
 /* Fetch a local static memory cell into the primary register */
 
-void getlmem(int lbl,char * tptr,char test_p)	/* jrd added test_p */
-{
+void
+getlmem(int lbl, char *tptr, char test_p)
+{                               /* jrd added test_p */
   if (char_t_p(tptr))
-    if (tptr[0] & T_UNSIGNED)
-    {
-      ot("\tldau\t"); outlabnl(lbl);
+    if (tptr[0] & T_UNSIGNED) {
+      ot("\tldau\t");
+      outlabnl(lbl);
+    } else {
+      ot("\tldas\t");
+      outlabnl(lbl);
     }
-    else
-    {
-      ot("\tldas\t"); outlabnl(lbl);
-    }
-  else				/* loading word-sized thing */
-    if (test_p)
-    {
-      ot("\tlda\t"); outlabnl(lbl);
-      ot("\tora\t"); outlab(lbl); ol("+1");
-    }
-    else
-    {
-      ot("\tldax\t"); outlabnl(lbl);
+  else                          /* loading word-sized thing */
+    if (test_p) {
+      ot("\tlda\t");
+      outlabnl(lbl);
+      ot("\tora\t");
+      outlab(lbl);
+      ol("+1");
+    } else {
+      ot("\tldax\t");
+      outlabnl(lbl);
     }
 }
 
 /* and another... */
 
-void konst3s(int offs)
+void
+konst3s(int offs)
 {
   konst3(offs - oursp);
 }
 
 #ifdef UNSIGNED_FIX
-/* 
-   this is another helper fun for generating the right variant of
-   ldaxxx frob.  given a typespec and an extension, generate
-   "lda" followed by <ext> for signed char, 'u'<ext> for unsigned 
-   char, or 'x'<ext> for fixnum 
+/*
+  this is another helper fun for generating the right variant of
+  ldaxxx frob.  given a typespec and an extension, generate
+  "lda" followed by <ext> for signed char, 'u'<ext> for unsigned
+  char, or 'x'<ext> for fixnum
 */
-void lda_helper(unsigned char * typestring,char * ext)
+void
+lda_helper(unsigned char *typestring, char *ext)
 {
   ot("\tjsr\tlda");
-  if (char_t_p(typestring))	/* some kind of char-sized thing? */
-    {
+  if (char_t_p(typestring)) {   /* some kind of char-sized thing? */
     if (typestring[0] & T_UNSIGNED)
-	    outchar('u');		/* call unsigned variant */
-    }
-  else
-    outchar('x');		/* call word-sized variant */
+      outchar('u');             /* call unsigned variant */
+  } else
+    outchar('x');               /* call word-sized variant */
   ol(ext);
 }
 #endif
@@ -227,137 +235,130 @@ void lda_helper(unsigned char * typestring,char * ext)
   Fetch the address of the specified symbol
   into the primary register
 */
-void getladr(int offs)
+void
+getladr(int offs)
 {
-  konst3s(offs);		/* load Y with offset value */
-  oljsr("locysp");		/* and compute location of SP@(Y) */
+  konst3s(offs);                /* load Y with offset value */
+  oljsr("locysp");              /* and compute location of SP@(Y) */
 }
 
 /*
   getloc( offs, tptr )
   Fetch specified local object (local var).
 */
-void getloc(int offs,char * tptr)
- 
+void
+getloc(int offs, char *tptr)
 {
-//  konst3s(offs);		/* load Y with offset value */
- 
+
+  //konst3s(offs);              /* load Y with offset value */
+
 #ifdef UNSIGNED_FIX
-//  lda_helper(tptr, "ysp");
-  
-  if (char_t_p(tptr) )
-  {
-    if ( tptr[0] & T_UNSIGNED )
-    {
+  //lda_helper(tptr, "ysp");
+
+  if (char_t_p(tptr)) {
+    if (tptr[0] & T_UNSIGNED) {
       ol("\tldx\t#0");
-      if (offs - oursp)
-      {
+      if (offs - oursp) {
         konst3s(offs);
         ol("\tlda\t(sp),y");
-      }else
+      } else
         ol("\tlda\t(sp)");
-    }else
-    {
+    } else {
       konst3s(offs);
       oljsr("ldaysp");
     }
-  }else
-  {
+  } else {
     konst3s(offs);
     oljsr("ldaxysp");
   }
 #else
   oljsr((char_t_p(tptr) ? "ldaysp" : "ldaxysp"));
 #endif
- 
+
 }
 
 /*
   putloc( offs, tptr )
   Put data into local object.
 */
-void putloc(int offs,char * tptr)
+void
+putloc(int offs, char *tptr)
 {
-  /*konst3s(offs);*/		/* load Y with offset value */
-  /*oljsr((char_t_p(tptr) ? "staysp" : "staxysp"));*/
+  /* konst3s(offs); *//* load Y with offset value */
+  /* oljsr((char_t_p(tptr) ? "staysp" : "staxysp")); */
   if (char_t_p(tptr))
-    if (offs - oursp)
-      {
+    if (offs - oursp) {
       konst3s(offs);
       ol("\tsta\t(sp),y");
-      }
-     else
-       ol("\tsta\t(sp)");
-  else
-    {
+    } else
+      ol("\tsta\t(sp)");
+  else {
     konst3s(offs);
     oljsr("staxysp");
-    }
- 
+  }
+
 }
 
 /*
   Store the primary register into the specified
-  static memory cell 
+  static memory cell
 */
-void putmem(char * lab,char * tptr)
+void
+putmem(char *lab, char *tptr)
 {
   ot("\tsta\t");
   outgblnl(lab);
-  if (!char_t_p(tptr))
-    {
-      ot("\tstx\t");
-      outgbl(lab);
-      ol("+1");
-    }
+  if (!char_t_p(tptr)) {
+    ot("\tstx\t");
+    outgbl(lab);
+    ol("+1");
+  }
 }
 /*
   Store the primary register into the specified
-  local static memory cell 
+  local static memory cell
 */
-void putlmem(int lab,char * tptr)
+void
+putlmem(int lab, char *tptr)
 {
   ot("\tsta\t");
   outlabnl(lab);
- if (!char_t_p(tptr))
-    {
-      ot("\tstx\t");
-      outlab(lab);
-      ol("+1");
-    }
-} 
+  if (!char_t_p(tptr)) {
+    ot("\tstx\t");
+    outlab(lab);
+    ol("+1");
+  }
+}
 /*
   putstk( tptr )
   Store the specified object type in the primary register
   at the address on the top of the stack
 */
-void putstk(struct expent * lval)
- 
+void
+putstk(struct expent *lval)
 {
-  if ((lval->e_flags == E_MEOFFS) && /* some kind of structure */
-      (lval->e_const != 0))	/* and not first slot... */
-    {
-      konst3(lval->e_const);	/* load Y with structure offset */
+
+  if ((lval->e_flags == E_MEOFFS) &&    /* some kind of structure */
+      (lval->e_const != 0)) {   /* and not first slot... */
+    konst3(lval->e_const);      /* load Y with structure offset */
 #ifdef old_way
-      if (lval->e_tptr[0] == T_CHAR)
-	oljsr("staspidx");	/* store A at ((SP))+Y */
-      else
-	oljsr("staxspidx");	/* store AX at ((SP))+Y */
+    if (lval->e_tptr[0] == T_CHAR)
+      oljsr("staspidx");        /* store A at ((SP))+Y */
+    else
+      oljsr("staxspidx");       /* store AX at ((SP))+Y */
 #else
-      oljsr((char_t_p(lval->e_tptr) ? "staspidx" : "staxspidx"));
+    oljsr((char_t_p(lval->e_tptr) ? "staspidx" : "staxspidx"));
 #endif
-    }
-  else
-    {
+  } else {
 #ifdef old_way
-      if (lval->e_tptr[0] == T_CHAR)
-	oljsr("staspp"); /* store A at ((SP)) */
-      else
-	oljsr("staxspp");	/* store AX at ((SP)) */
+    if (lval->e_tptr[0] == T_CHAR)
+      oljsr("staspp");          /* store A at ((SP)) */
+    else
+      oljsr("staxspp");         /* store AX at ((SP)) */
 #else
-      oljsr((char_t_p(lval->e_tptr) ? "staspp" : "staxspp"));
+    oljsr((char_t_p(lval->e_tptr) ? "staspp" : "staxspp"));
 #endif
-    }
+  }
   popsp();
 }
 
@@ -366,55 +367,54 @@ void putstk(struct expent * lval)
   Fetch the specified object type indirect through the
   primary register into the primary register
 */
-void indirect(struct expent * lval)
- 
+void
+indirect(struct expent *lval)
 {
-  if ((lval->e_flags == E_MEOFFS) && /* some kind of structure */
-      (lval->e_const != 0))	/* and not slot 0 */
-    {
-      konst3(lval->e_const);	/* load Y with offset */
- 
+
+  if ((lval->e_flags == E_MEOFFS) &&    /* some kind of structure */
+      (lval->e_const != 0)) {   /* and not slot 0 */
+    konst3(lval->e_const);      /* load Y with offset */
+
 #ifdef UNSIGNED_FIX
-      lda_helper(lval->e_tptr, "idx");
+    lda_helper(lval->e_tptr, "idx");
 #else
-      oljsr((char_t_p(lval->e_tptr) ? "ldaidx" : "ldaxidx"));
+    oljsr((char_t_p(lval->e_tptr) ? "ldaidx" : "ldaxidx"));
 #endif
- 
-    }
-  else
-    {
- 
+
+  } else {
+
 #ifdef UNSIGNED_FIX
-      lda_helper(lval->e_tptr, "i");
+    lda_helper(lval->e_tptr, "i");
 #else
-      oljsr((char_t_p(lval->e_tptr) ? "ldai" : "ldaxi"));
+    oljsr((char_t_p(lval->e_tptr) ? "ldai" : "ldaxi"));
 #endif
-    }
+  }
 }
-  
+
 /*
   save()
   Copy AX to hold register.
 */
-void save()
+void
+save()
 {
-/*	ol("\tstx\t<(svax+1)\n"
-	   "\tsta\t<svax");
-*/
-	ol("\tpha\n\tphx");
+  /*
+   * ol("\tstx\t<(svax+1)\n" "\tsta\t<svax");
+   */
+  ol("\tpha\n\tphx");
 }
 /*
   rstr()
   Copy hold register to P.
 */
 
-void rstr()
+void
+rstr()
 {
-/*	
-  ol("\tldx\t<(svax+1)\n"
-     "\tlda\t<(svax)");
-*/
-	ol("\tplx\n\tpla");
+  /*
+   * ol("\tldx\t<(svax+1)\n" "\tlda\t<(svax)");
+   */
+  ol("\tplx\n\tpla");
 }
 
 /*
@@ -422,102 +422,118 @@ void rstr()
   Print partial instruction to get an immediate value
   into the primary register.
 */
-char LDAX[]="\tldax\t#";
+char LDAX[] = "\tldax\t#";
 
-void immed(int i)
+void
+immed(int i)
 {
-  olstrdnl(LDAX,i);
+  olstrdnl(LDAX, i);
 }
-void immedgbl(int i)
+void
+immedgbl(int i)
 {
-  ot(LDAX); outgblnl((char *)i);
+  ot(LDAX);
+  outgblnl((char *)i);
 }
-void immedlab(int i)
+void
+immedlab(int i)
 {
-  ot(LDAX); outlabnl(i);
+  ot(LDAX);
+  outlabnl(i);
 }
-void immedslt(int i)
+void
+immedslt(int i)
 {
-  ot(LDAX); outslt(i); 
+  ot(LDAX);
+  outslt(i);
 }
 /* added by jrd.  force a test to set cond codes right */
-void tst()
+void
+tst()
 {
-  oljsr("tstax"); /* 42BS again in 97/09/20 */
+  oljsr("tstax");               /* 42BS again in 97/09/20 */
 }
 
 /*
   push()
   Push the primary register onto the stack
 */
-void push()
+void
+push()
 {
   oljsr("pushax");
   pushsp();
 }
 
 /* don't know the difference ???? 42BS */
-void push1()
+void
+push1()
 {
   oljsr("pushax");
-  pushsp(); 
+  pushsp();
 }
 
 
 /* Swap the primary register and the top of the stack */
-void swapstk()
+void
+swapstk()
 {
   oljsr("swapstk");
 }
 
 /* Call the specified subroutine name */
-void call(char * lbl,int narg)
-
+void
+call(char *lbl, int narg)
 {
- if (!findmac("NOARGC")) /* don't generate argc if suppressed */
-      konst3(narg >> 1);	/* want n args, not nbytes args */
+
+  if (!findmac("NOARGC"))       /* don't generate argc if suppressed */
+    konst3(narg >> 1);          /* want n args, not nbytes args */
   ot("\tjsr\t");
   outgblnl(lbl);
 
-  oursp = oursp + narg;		/* callee pops args */
+  oursp = oursp + narg;         /* callee pops args */
 }
 
 /* Return from subroutine */
-void ret(int ret)
+void
+ret(int ret)
 {
   if (interrupt)
     ol("\trts");
-  else
-    {
-      konst3(ret);
-      ol("\tjmp\texitfun");
-  /* do not change into lbra !!!! 42BS */
-    }
+  else {
+    konst3(ret);
+    ol("\tjmp\texitfun");
+    /* do not change into lbra !!!! 42BS */
+  }
 }
 
 /*
   Perform subroutine call to value on top of stack.
-  This really calls value in AX 
+  This really calls value in AX
 */
-void callstk(int narg)
-
+void
+callstk(int narg)
 {
-  if (!findmac("NOARGC"))	/* don't generate argc if suppressed */
-    konst3(narg >> 1);		/* load Y with arg count */
-  oljsr("callax");		/* do the call */
-  oursp = oursp + narg;		/* callee pops args */
-/*  popsp();	*/		/* pop subr addr */
+
+  if (!findmac("NOARGC"))       /* don't generate argc if suppressed */
+    konst3(narg >> 1);          /* load Y with arg count */
+  oljsr("callax");              /* do the call */
+  oursp = oursp + narg;         /* callee pops args */
+  /*  popsp();  *//* pop subr addr */
 }
 
 /* Jump to specified internal label number */
-void jump(int label)
-{ 
+void
+jump(int label)
+{
+
   ot("\tlbra\t");
   outlabnl(label);
 }
 
 /* output case-jump preample */
-void casejump()
+void
+casejump()
 {
   oljsr("casejump");
 }
@@ -525,28 +541,32 @@ void casejump()
 /*
   truejump -- jump to lable if p nz
 */
-void truejump(int label,int invert)
+void
+truejump(int label, int invert)
 {
   if (invert)
     falsejump(label, 0);
-  else
-    {
-      ot("\tlbne\t"); outlab(label); ol("\t;;; truejump");
-    }
+  else {
+    ot("\tlbne\t");
+    outlab(label);
+    ol("\t;;; truejump");
+  }
 }
 
 /*
   falsejump -- jump to lable if AX is zero
 */
-void falsejump(int label,int invert)
+void
+falsejump(int label, int invert)
 {
 
-  if (invert)
+  if (invert){
     truejump(label, 0);
-  else
-    {
-      ot("\tlbeq\t"); outlab(label); ol("\t;;; falsejump");
-    }
+  } else {
+    ot("\tlbeq\t");
+    outlab(label);
+    ol("\t;;; falsejump");
+  }
 }
 
 /*
@@ -554,83 +574,77 @@ void falsejump(int label,int invert)
   and jump not-equal to label
 */
 /* cmpjump(constant, label)
-int	constant;
-int	label;
-{
-  ol(";;; cmpjump");
-} */
+   int  constant;
+   int  label;
+   {
+   ol(";;; cmpjump");
+   } */
 
 /*
   Modify the stack pointer to the
   new value indicated
 */
-void otx(char * str)
+void
+otx(char *str)
 {
   ot("\tjsr\t");
   ot(str);
   ot("sp");
 }
 
-void mod_internal(int k,char * verb1,char * verb2)
+void
+mod_internal(int k, char *verb1, char *verb2)
 {
-  if (k <= 8)
-    {
-      otx(verb1);
-      outchar(k + '0');
-    }
-  else
-    {
-      konst3(k);
-      otx(verb2);
-    }
+  if (k <= 8) {
+    otx(verb1);
+    outchar(k + '0');
+  } else {
+    konst3(k);
+    otx(verb2);
+  }
   nl();
 }
 
-int modstk(int newsp)
+int
+modstk(int newsp)
 {
-int k;
+  int k;
 
-  if ((k = (newsp - oursp)) > 0)
-    {
-      mod_internal(k, "inc", "addy");
-    }
-  else if (k < 0)
-    {
-      mod_internal(-k, "dec", "suby");
-    }
+  if ((k = (newsp - oursp)) > 0) {
+    mod_internal(k, "inc", "addy");
+  } else if (k < 0) {
+    mod_internal(-k, "dec", "suby");
+  }
   return (newsp);
 }
 
 /* Double the primary register */
- 
-void doublereg()
+
+void
+doublereg()
 {
   oljsr("aslax");
 }
 
-void incprim(int n)
+void
+incprim(int n)
 {
-  if ( n < 256 )
-  {
+  if (n < 256) {
     konst3(n);
     oljsr("addaxy");
-  }
-  else
-  {
+  } else {
     push();
     immed(n);
     add();
   }
 }
-void decprim(int n)
+void
+decprim(int n)
 {
-  if ( n < 256 )
-  {
+  if (n < 256) {
     konst3(n);
     oljsr("subaxy");
-  }
-  else
-  {
+  } else {
     push();
     immed(n);
     sub();
@@ -638,62 +652,64 @@ void decprim(int n)
 }
 
 /*
-  Add the primary and secondary registers 
-  (results in primary) 
+  Add the primary and secondary registers
+  (results in primary)
 */
- 
-void add()
+
+void
+add()
 {
   oljsrpop("addtos");
 }
 
 
-/* 
-  Subtract the primary register from the secondary 
+/*
+  Subtract the primary register from the secondary
   (results in primary)
 */
-void sub()
+void
+sub()
 {
   oljsrpop("subtos");
 }
 
 
 /*
-  Multiply the primary and secondary registers 
-  (results in primary 
+  Multiply the primary and secondary registers
+  (results in primary
 */
-void mult()
+void
+mult()
 {
-  
-  if (interrupt)
-  {
-    static no_glb_flag = 1;
-    
-    if ( no_glb_flag )
-      ol("\txref _multos"); // hack, but works :)
+
+  if (interrupt) {
+    static int no_glb_flag = 1;
+
+    if (no_glb_flag)
+      ol("\txref _multos");
+    //hack, but works:)
     no_glb_flag = 0;
     oljsrpop("_multos");
-  }
-  else
+  } else
     oljsrpop("multos");
 }
 /*
-  Divide the secondary register by the primary 
-  (quotient in primary, remainder in secondary) 
+  Divide the secondary register by the primary
+  (quotient in primary, remainder in secondary)
 */
 
-void _div()
+void
+_div()
 {
-  if (interrupt)
-  {
-    static no_glb_flag = 1;
-    
-    if ( no_glb_flag )
-      ol("\txref _divtos"); // hack, but works :)
+  if (interrupt) {
+    static int no_glb_flag = 1;
+
+    if (no_glb_flag)
+      ol("\txref _divtos");
+    //hack, but works:)
     no_glb_flag = 0;
     oljsrpop("_divtos");
-  }
-  else
+  } else
     oljsrpop("divtos");
 }
 
@@ -701,92 +717,101 @@ void _div()
   Compute remainder (mod) of secondary register divided
   by the primary (remainder in primary, quotient in secondary)
 */
- 
-void mod()
+
+void
+mod()
 {
   oljsrpop("modtos");
 }
 
 /*
-   Inclusive 'or' the primary and the secondary registers
-   (results in primary) 
+  Inclusive 'or' the primary and the secondary registers
+  (results in primary)
 */
-void or()
+void
+or()
 {
-   oljsrpop("or_tos");
+  oljsrpop("or_tos");
 }
 
 
 /*
-  Exclusive 'or' the primary and seconday registers 
-  (results in primary) 
-*/ 
-void xor()
+  Exclusive 'or' the primary and seconday registers
+  (results in primary)
+*/
+void
+xor()
 {
   oljsrpop("xortos");
 }
 
-/* 
-  'And' the primary and secondary registers 
-  (results in primary) 
+/*
+  'And' the primary and secondary registers
+  (results in primary)
 */
- 
-void and()
+
+void
+and()
 {
- 
   oljsrpop("andtos");
 }
 
- /*
-  Arithmetic shift right the secondary register number of 
-  times in primary (results in primary) 
-*/
- 
-void asr()
+/*
+ * Arithmetic shift right the secondary register number of times in primary
+ * (results in primary)
+ */
+
+void
+asr()
 {
- 
   oljsrpop("asrtos");
 }
 
 /*
-  Arithmetic left shift the secondary register number of 
-  times in primary (results in primary) 
+  Arithmetic left shift the secondary register number of
+  times in primary (results in primary)
 */
- 
-void asl()
+
+void
+asl()
 {
   oljsrpop("asltos");
 }
 
-void aslprim(int n)
+void
+aslprim(int n)
 {
   konst3(n);
   oljsr("aslaxy");
 }
 
 /* Form two's complement of primary register */
-void neg()
+void
+neg()
 {
- oljsr("negax");
+  oljsr("negax");
 }
 
 
 /* Form logical complement of primary register */
- 
-void lneg()
+
+void
+lneg()
 {
   oljsr("lnegax");
 }
 
 /* Form one's complement of primary register */
-void com()
+void
+com()
 {
- oljsr("complax");
+  oljsr("complax");
 }
 
 
 /* Increment the primary register by one */
-void inc()
+void
+inc()
 {
   konst3(1);
   oljsr("addaxy");
@@ -794,38 +819,42 @@ void inc()
 
 
 /* Decrement the primary register by one */
-void dec()
+void
+dec()
 {
   oljsr("decax1");
 }
 
- 
-/* 
-  Following are the conditional operators 
-  They compare the secondary register against the primary 
-  and put a literal 1 in the primary if the condition is 
-  true, otherwise they clear the primary register 
+
+/*
+  Following are the conditional operators
+  They compare the secondary register against the primary
+  and put a literal 1 in the primary if the condition is
+  true, otherwise they clear the primary register
 */
 
 /* Test for equal */
- 
-void eq()
+
+void
+eq()
 {
   oljsrpop("toseqax");
 }
 
- 
+
 /* zero-p */
- 
-void eq0()
+
+void
+eq0()
 {
   oljsr("axzerop");
 }
- 
+
 
 /* Test for not equal */
- 
-void ne()
+
+void
+ne()
 {
   oljsrpop("tosneax");
 }
@@ -833,28 +862,32 @@ void ne()
 
 
 /* Test for less than */
-void lt(int nosign)
- 
+void
+lt(int nosign)
 {
+
   oljsrpop(nosign ? "tosultax" : "tosltax");
 }
 
 /* Test for less than or equal to */
-void le(int nosign )
+void
+le(int nosign)
 {
-  oljsrpop(nosign  ? "tosuleax" : "tosleax");
+  oljsrpop(nosign ? "tosuleax" : "tosleax");
 }
 
 /* Test for greater than */
-void gt(int nosign)
+void
+gt(int nosign)
 {
-  oljsrpop(nosign  ? "tosugtax" : "tosgtax");
+  oljsrpop(nosign ? "tosugtax" : "tosgtax");
 }
 
 /* Test for greater than or equal to */
-void ge(int nosign)
+void
+ge(int nosign)
 {
-  oljsrpop( nosign ? "tosugeax" : "tosgeax");
+  oljsrpop(nosign ? "tosugeax" : "tosgeax");
 }
 
 #ifdef old_cruft
@@ -867,22 +900,19 @@ ult()
 }
 
 /* Test for less than or equal to (unsigned) */
-ule()
-{
+ule() {
   oljsr("tosuleax");
   popsp();
 }
 
 /* Test for greater than (unsigned) */
-ugt()
-{
+ugt() {
   oljsr("tosugtax");
   popsp();
 }
 
 /* Test for greater than or equal to (unsigned) */
-uge()
-{
+uge() {
   oljsr("tosugeax");
   popsp();
 }
@@ -895,48 +925,46 @@ static char xdig[4];
 static char xd0 = '\0';
 #endif
 
-void outdec(int numbr)
+void
+outdec(int numbr)
 {
-char dummy[10];
+  char dummy[10];
 
-sprintf(dummy,"%d",numbr);
- 
-ot(dummy);
+  sprintf(dummy, "%d", numbr);
+
+  ot(dummy);
 }
 #ifdef urgs
 {
-char digit[8];
-int i;
- 
+  char digit[8];
+  int i;
+
 
 #ifdef busted
-/* use bummed assembler routine */
-/* OOps!  Can't use itoa here, cause it uses the FP routines, and
-  they trash page 5, which we use for the symbol table.  print it in hex.
-  itoa(numbr, digit);
-*/
+  /* use bummed assembler routine */
+  /* OOps!  Can't use itoa here, cause it uses the FP routines, and
+     they trash page 5, which we use for the symbol table.  print it in hex.
+     itoa(numbr, digit);
+  */
   digit[0] = '$';
-  for (i = 3; i >= 0; --i)
-    {
-      xdig[i] = (numbr & 0x0F) + '0';
-      numbr >> = 4;
-    }
-/*  ot(digit); */
+  for (i = 3; i >= 0; --i) {
+    xdig[i] = (numbr & 0x0F) + '0';
+    numbr >> = 4;
+  }
+  /*  ot(digit); */
   ot(&dollr);
 #else
 
-  if (numbr < 0)
-    {
-      numbr = -numbr;
-      outchar('-');
-    }
+  if (numbr < 0) {
+    numbr = -numbr;
+    outchar('-');
+  }
   digit[0] = 0;
-  for (i = 0; numbr > 0;)
-    {
-      digit[i] = numbr % 10;
-      numbr = numbr / 10;
-      ++i;
-    }
+  for (i = 0; numbr > 0;) {
+    digit[i] = numbr % 10;
+    numbr = numbr / 10;
+    ++i;
+  }
   if (i == 0)
     i = 1;
   while (i > 0)
@@ -946,220 +974,244 @@ int i;
 }
 #endif
 
-void outdecnl(int n)
+void
+outdecnl(int n)
 {
   outdec(n);
   nl();
 }
 
-void outcch(int numbr)
- 
+void
+outcch(int numbr)
 {
+
   outdec(numbr);
 }
 
-void outlabledef(int lbl,int value)
+void
+outlabledef(int lbl, int value)
 {
   outchar('L');
   outdec(lbl);
   ot(":\t=");
-  outdecnl(value); 
+  outdecnl(value);
 }
 
-void outlab(int lbl)
+void
+outlab(int lbl)
 {
   outchar('L');
   outdec(lbl);
 }
 
-void outlabnl(int lbl)
+void
+outlabnl(int lbl)
 {
   outlab(lbl);
   nl();
 }
 
-void outcdf(int labl)
+void
+outcdf(int labl)
 {
- 
+
   outlab(labl);
   ol(":");
- 
+
 }
 
-void outdat(int n)
+void
+outdat(int n)
 {
   ol(";;; outdat");
 }
 
-void outslt(int n)
+void
+outslt(int n)
 {
-/* this seems to get used for constant string values? */
-  outlab(litlab); /* output current lit pool labl */
+  /* this seems to get used for constant string values? */
+  outlab(litlab);               /* output current lit pool labl */
   outchar('+');
   outdec(n);
   nl();
 }
 
 /* reserve static storage, n bytes */
-void outsp(int n)
+void
+outsp(int n)
 {
-//  ol("\tbss");
+  //ol("\tbss");
   ot("\tds\t");
   outdec(n);
   nl();
- // ol("\ttext");
+  //ol("\ttext");
 }
 
 /* output a row of bytes as a constant */
-void outbv(char * bytes,int nbytes)
+void
+outbv(char *bytes, int nbytes)
 {
-int bpl;
-  
-  while (nbytes)
-    {
-      nbytes -= (bpl = (nbytes > 16) ? 16 : nbytes);
-      bytepref();
- kludge1:
-      outdec(*bytes++);
-      if (--bpl)
-	{
-	  outchar(',');
-	  goto kludge1;
-	}
-	outchar('\n');
-  
+  int bpl;
+
+  while (nbytes) {
+    nbytes -= (bpl = (nbytes > 16) ? 16 : nbytes);
+    bytepref();
+  kludge1:
+    outdec(*bytes++);
+    if (--bpl) {
+      outchar(',');
+      goto kludge1;
     }
+    outchar('\n');
+
+  }
 }
 #define SEG_TEXT   1
 #define SEG_DATA   2
 #define SEG_BSS    3
 #define SEG_BSSZP  4
 int CurrentSegment = SEG_TEXT;
-void segdata()
-{ 
-  if ( CurrentSegment == SEG_DATA ) return;
+void
+segdata()
+{
+
+  if (CurrentSegment == SEG_DATA)
+    return;
   ol("\tdata");
   CurrentSegment = SEG_DATA;
 }
-void segtext()
-{ 
-  if ( CurrentSegment == SEG_TEXT ) return;
+void
+segtext()
+{
+
+  if (CurrentSegment == SEG_TEXT)
+    return;
   ol("\ttext");
   CurrentSegment = SEG_TEXT;
 }
-void segbss()
-{ 
-  if ( CurrentSegment == SEG_BSS ) return;
+void
+segbss()
+{
+
+  if (CurrentSegment == SEG_BSS)
+    return;
   ol("\tbss");
   CurrentSegment = SEG_BSS;
 }
-void segbsszp()
-{ 
-  if ( CurrentSegment == SEG_BSSZP ) return;
+void
+segbsszp()
+{
+
+  if (CurrentSegment == SEG_BSSZP)
+    return;
   ol("\tbsszp");
   CurrentSegment = SEG_BSSZP;
 }
 
 /* prefix for word-sized constant */
-void wordpref()
-{ flushout();
+void
+wordpref()
+{
+  flushout();
   ot("\tdc.w\t");
 }
 
 /* prefix for byte-sized constant */
-void bytepref()
-{ flushout();
+void
+bytepref()
+{
+  flushout();
   ot("\tdc.b\t");
 }
 
 /* print a global name into the asm file.  This probly supercedes the
    one below... */
-void outgbl(char * name)
+void
+outgbl(char *name)
 {
   outchar('_');
   ot(name);
 }
 
-void outgblnl(char * name)
+void
+outgblnl(char *name)
 {
   outgbl(name);
   nl();
 }
 
-void outgblc(char * name)
- 
+void
+outgblc(char *name)
 {
+
   outgbl(name);
   ol("::");
 }
 
 /* output a global or external name */
 
-void outgoe(char * sname)
- 
+void
+outgoe(char *sname)
 {
+
   ot("\tglobal\t");
   outgblnl(sname);
 }
 
-void outext(char * sname)
- 
+void
+outext(char *sname)
 {
+
   ot("\txref\t");
   outgblnl(sname);
 }
 
-int popsp()
+int
+popsp()
 {
   return (oursp += 2);
 }
 
-int pushsp()
+int
+pushsp()
 {
   return (oursp -= 2);
 }
 
-void SaveRegs(int base,int save)
+void
+SaveRegs(int base, int save)
 {
-  if (save)
-  {
-    if ( save > 2 )
-    {
-      olstrdnl("\tldy\t#",save);
-      olstrdnl("\tldx\t#",base+save-1);
+  if (save) {
+    if (save > 2) {
+      olstrdnl("\tldy\t#", save);
+      olstrdnl("\tldx\t#", base + save - 1);
       ol("\tjsr\tSaveRegs");
-    }
-    else
-    {
-      if ( save > 1 )
-      {
-        olstrdnl("\tlda\t",base+1);
+    } else {
+      if (save > 1) {
+        olstrdnl("\tlda\t", base + 1);
         ol("\tpha");
       }
-      olstrdnl("\tlda\t",base);
+      olstrdnl("\tlda\t", base);
       ol("\tpha");
     }
   }
 }
 
-void RestoreRegs(int base,int save)
+void
+RestoreRegs(int base, int save)
 {
-  if ( save > 2)
-  {
-    olstrdnl("\tldy\t#",save);
-    olstrdnl("\tldx\t#",base);
+  if (save > 2) {
+    olstrdnl("\tldy\t#", save);
+    olstrdnl("\tldx\t#", base);
     ol("\tjsr\tRestoreRegs");
-  }
-  else if ( save )
-  {
+  } else if (save) {
     ot("\tpla\n"
        "\tsta\t");
     outdecnl(base);
-    if (save>1)
-    {
+    if (save > 1) {
       ot("\tpla\n"
          "\tsta\t");
-      outdecnl(1+base);
+      outdecnl(1 + base);
     }
   }
 }

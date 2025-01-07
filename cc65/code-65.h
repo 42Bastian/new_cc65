@@ -1,13 +1,13 @@
 /*
 
   code-65.h
-   
+
    (c) 1998 42Bastian Schick
 
    last modified:
-   
+
    98/08/17   42BS  created
-   
+
 */
 
 #ifndef CODE_65_H
@@ -41,7 +41,7 @@ void putstk(struct expent * lval);
 void indirect(struct expent * lval);
 void save();
 void rstr();
-void immed();
+void immed(int );
 void immedgbl(int i);
 void immedlab(int i);
 void immedslt(int i);
