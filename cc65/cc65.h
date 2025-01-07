@@ -1,6 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* global defs for CC65 */
-
 #undef M6502
 
 /* added by jrd.  don't generate arg counts here */
@@ -30,7 +32,7 @@ extern int debug;
 extern int litlab;		/* current one */
 extern int litspace;		/* total string space used */
 
- 
+
 
 /* cross-compiler... */
 #define GSPACE		(128*1024)
@@ -127,18 +129,18 @@ extern int litspace;		/* total string space used */
 #define	litabsz		512
 #define	litmax		litabsz-1
 
- 
+
 #define	linesize	512	/* hope this is enough :) */
 
 #define	linemax		linesize-1
 #define	mpmax		linemax
 
-struct hashent 
+struct hashent
 {
   struct hashent * ptr;
   struct hashent * typeptr;
   struct hashent * s_ptr;
-  
+
   struct
   {
     short g;
@@ -159,19 +161,19 @@ struct hashent
 };
 
 /* used by newpre.c and newcmd.c.  sort of like op_alist... */
-struct tok_elt 
+struct tok_elt
 {
   char * toknam;
   int toknbr;
 };
 
-struct expent 
+struct expent
 {
   /* this used to be just an int.  jrd split it into two bytes,
      in order to have an extra field for tests without taking up
      any more space ...
      int		e_flags;	*/
-    
+
   unsigned char e_flags;
   unsigned char e_test;
   char * e_tptr;
@@ -179,7 +181,7 @@ struct expent
   struct hashent * typeptr;
 };
 
-struct filent 
+struct filent
 {
 #ifdef old_cruft
   int f_iocb;
@@ -195,7 +197,7 @@ extern char		macltab[256];
 extern int		wq[wqtabsz];
 extern struct hashent * lvtab[128];
 extern char		outq[OUTQSZ];
- 
+
 
 extern struct hashent * htab[HTABSZ];
 extern char *		macarg[MACARGSZ];
@@ -244,17 +246,17 @@ extern int	nxtlab,
 extern struct filent	filetab[MAXFILES];
 extern int	ifile;
 
- 
+
 extern FILE *	inp;
 extern FILE *	output;
- 
+
 
 extern int	ln;
 extern char *	fin;
 
- 
+
 extern char	fname[80];
- 
+
 
 extern int	curtok;
 extern int	curval;
@@ -268,16 +270,16 @@ extern int	asm_kludge;	/* kludge for #asm processing */
 extern char *	incl_dir;	/* dir for include files */
 
 /* extern char	get_test; */	/* flag for getmem */
- 
+
 extern char	source;		/* put source in m65 file as comments */
- 
+
 
 char *	Gmalloc();
 char *	Lmalloc();
 
 
 #define dbgprintf(foo,bar) {}
- 
+
 
 /* this struct added by jrd, used in unified code-generation stuff.  see
    exp1, exp2, exp3.  */

@@ -2,9 +2,6 @@
 /*
    Error reporting code
 */
-
-#include <stdio.h>
-
 #include "cclex.h"
 #include "cc65.h"
 #include "error.h"
@@ -13,7 +10,7 @@
   Print error with no prefix.
 */
 void Error(char * msg)
- 
+
 {
   PError("", msg);
 }
@@ -32,7 +29,7 @@ void Syntax()
   Handle "illegal ..." messages.
 */
 void Illegal(char *msg)
- 
+
 {
   PError("illegal ", msg);
 }
@@ -106,7 +103,7 @@ void PError(char *pfx,char * msg)
     printf("curtok = %d\n", curtok);
     printf("nxttok = %d\n", nxttok);
   }
-  
+
   if (++errcnt > 6)
     fatal("too many errors");
 }
