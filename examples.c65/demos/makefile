@@ -1,6 +1,5 @@
-
-LD = link65 -m 
-CC = cc65
+LD = CC65LIB=../../lib link65 -m
+CC = CC65INCLUDE=../../include cc65
 AS = ra65
 RM = rm -f
 CFLAGS=
@@ -9,11 +8,11 @@ LIBS = lynx.olb c.olb
 
 .SUFFIXES: .c65 .obj .m65
 
-.m65.obj:	
+.m65.obj:
 	$(AS) -o $@ $<
 
 
-all : demo0.com demo1.com demo2.com demo3.com mazedemo.com sprite.com 
+all : demo0.com demo1.com demo2.com demo3.com mazedemo.com sprite.com
 	@echo
 	@echo "Don't forget to press the joypad to begin the demos."
 	@echo
@@ -36,7 +35,7 @@ mazedemo.com : mazedemo.obj maze.obj
 sprite.com : sprite.obj
 	$(LD) -b200 -s512 -o sprite.com sprite.obj $(LIBS)
 
-clean :  
+clean :
 	$(RM) *.obj
 	$(RM) *.com
 	$(RM) *.spr
@@ -66,7 +65,7 @@ demo3.obj : demo.c65
 	xopt demo.m65
 	$(AS) demo.m65
 	$(RM) demo.m65
-	
+
 sprite.obj : sprite.c65 sprite.h test.h
 	$(CC) $(CFLAGS)  sprite.c65
 	xopt sprite.m65
@@ -78,6 +77,6 @@ mazedemo.obj : mazedemo.c65
 	xopt mazedemo.m65
 	$(AS) mazedemo.m65
 	$(RM) mazedemo.m65
-	
+
 image.obj : image.raw
 	sprpck -t0 -p0 -i160206 image.raw image

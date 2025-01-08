@@ -8,7 +8,7 @@
 CC=cc65
 OP=xopt
 AS=ra65
-LD=link65  -m -v
+LD=link65 -m
 AR=libr65
 RM=rm -f
 
@@ -16,27 +16,25 @@ CFLAGS=
 
 .SUFFIXES: .com .ttp .o .obj .m65 .c
 
-.c.obj:
-	$(CC) $<
+%.obj: %.c
+	CC65INCLUDE=../include $(CC) $<
 	$(OP) $*.m65
 	$(AS) $*.m65
 #	$(RM) $*.m65
 
-.m65.obj:
+%.obj: %.m65
 	$(AS) $<
 
 all:	minimal.com mandel.com gfxtest.com
 
-
-
 gfxtest.com : gfxtest.obj
-	$(LD) -b200 -s512 -o $*.com $*.obj lynx.olb
+	CC65LIB=../lib $(LD) -b200 -s512 -o $*.com $*.obj lynx.olb
 
 mandel.com : mandel.obj
-	$(LD) -b4000 -B200 -s512 -o $*.com $*.obj lynx.olb
+	CC65LIB=../lib $(LD) -b4000 -B200 -s512 -o $*.com $*.obj lynx.olb
 
 minimal.com : minimal.obj title.obj
-	$(LD) $(LDFLAGS) -b200 -s512 -o $*.com $*.obj lynx.olb title.obj
+	CC65LIB=../lib $(LD) $(LDFLAGS) -b200 -s512 -o $*.com $*.obj lynx.olb title.obj
 
 minimal.obj : minimal.c title.obj
 
@@ -50,3 +48,4 @@ clean :
 	$(RM) *.spr
 	$(RM) *.bak
 	$(RM) *.map
+	$(RM) *.m65

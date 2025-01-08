@@ -4,6 +4,7 @@
    'COPYLEFT.JRD' for the full copyright notice.
 */
 
+#include <stdio.h>
 
 /* utils */
 int string_equal(char *s1,char *s2);

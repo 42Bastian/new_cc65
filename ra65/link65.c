@@ -591,7 +591,8 @@ add_library(char *name)
       printf("digest module %d\n", m);
 
     if (((i = read_header()) != OBJ_HEADER) && (i != NEW_OBJ_HEADER))   /* read obj header */
-      barf("internal error, lib contains module type %04x\n", (char *)i, "", "");
+      barf("internal error, lib contains module type %04x\n",
+           (char *)(uintptr_t)i, "", "");
 
     mod = &l->lm[m];
     mod->used = mod->n_defs = 0;
@@ -771,15 +772,11 @@ int main(int argc, char *argv[])
     if ((*argv)[0] == '-')
       switch ((*argv)[1]) {
       case 'v':
-        {
-          ++verbose;
-          break;
-        }
+        ++verbose;
+        break;
       case 'b':
-        {
-          exe_start = exe_high_water = gethex(*argv + 2);
-          break;
-        }
+        exe_start = exe_high_water = gethex(*argv + 2);
+        break;
       case 'z':
       case 'Z':
         bsszp_start = gethex(*argv + 2);
@@ -787,52 +784,33 @@ int main(int argc, char *argv[])
       case 'B':
         bss_start = gethex(*argv + 2);
         break;
-
       case 's':
         stack_size = atoi((*argv) + 2);
         break;
       case 'o':
       case 'O':
-        {
-          strcpy(output_name, *++argv);
-          --argc;
-          break;
-        }
+        strcpy(output_name, *++argv);
+        --argc;
+        break;
       case 'm':
-        {
-          map_p = 1;
-          break;
-        }
-        //case 'n':
-      case 'N':
-        //{
-        //start_p = 0;
-        //break;
-        // }
+        map_p = 1;
+        break;
       case 'r':
       case 'R':                     /* -Intruder.. */
-        {
-          ++noruntime;
-          input_file[0] = 0;
-          break;
-        }
+        ++noruntime;
+        input_file[0] = 0;
+        break;
       case 'h':
       case '?':
-        {
-          print_usage();
-          exit(0);
-        }
+        print_usage();
+        exit(0);
       case 'd':
-        {
-          ++debug;
-          break;
-        }
+        ++debug;
+        break;
         /* more later... */
       case 'c':
-        {
-          print_copyleft();
-          exit(0);
-        }
+        print_copyleft();
+        exit(0);
       default:
         printf("don't grok arg %s\n", *argv);
       }
@@ -970,7 +948,8 @@ int main(int argc, char *argv[])
 
   if (bsszp_start + bsszp_high_water > 0xff) {
     if (bsszp_start == 0x80)
-      barf("Zeropage overun !\nTry using -z%2x !", (char *)(0xff - bsszp_high_water), 0, 0);
+      barf("Zeropage overun !\nTry using -z%2x !",
+           (char *)(uintptr_t)(0xff - bsszp_high_water), 0, 0);
     else
       barf("Zeropage overun !", "", "", "");
   }
@@ -1077,7 +1056,7 @@ int main(int argc, char *argv[])
     mapf = fopen(output_name, "w");
 
     if (debug)
-      printf("map '%s'->%x\n", output_name, (unsigned int)mapf);
+      printf("map '%s'->%p\n", output_name, mapf);
 
     fprintf(mapf, "R - relative A - absolute\n"
             "T - text     Z - zeropage\n");

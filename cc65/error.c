@@ -83,8 +83,7 @@ void ersum()
   /* see if anything left hanging... */
   if (ncmp)
     Missing("closing bracket");
-  if (errcnt == 0 && verbose)
-    {
+  if (errcnt == 0 && verbose)   {
       printf("No errors.\n");
     }
 }
@@ -113,9 +112,11 @@ void PError(char *pfx,char * msg)
 void fatal(char * msg)
 {
   printf("fatal error: %s\n", msg);
-  printf("line: %s\n", line);
-  printf("curtok = %lu\n", curtok);
-  printf("nxttok = %lu\n", nxttok);
+  if (verbose) {
+    printf("line: %s\n", line);
+    printf("curtok = %lu\n", curtok);
+    printf("nxttok = %lu\n", nxttok);
+  }
   printf("Can't recover from previous errors:  Good-bye!\n");
   exit(2);
 }

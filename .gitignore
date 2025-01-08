@@ -1,0 +1,6 @@
+*.obj
+*.com
+*.map
+*.olb
+*.run
+bin

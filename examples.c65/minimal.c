@@ -4,7 +4,7 @@
 extern char titelSCB[];
 #asm
           xref _title
-          
+
 _titelSCB dc.b $c0,$10,$20
           dc.w 0,_title
           dc.w 0,0,$100,$100
@@ -22,9 +22,9 @@ register uchar x,y,c;
   CLI;
   SetBuffers(0x9000,0,0);
 
-  _SetRGB(pal);
+  _SetRGB(title_pal);
   DrawSprite(titelSCB);
-    
+
   for(;;);
 
 }

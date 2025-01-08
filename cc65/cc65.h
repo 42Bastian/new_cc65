@@ -113,7 +113,6 @@ extern int litspace;		/* total string space used */
 		/* flip this bit to invert sense of test */
 #define E_XINV		8
 
-
 #define	NAMESIZE 33
 #define NAMEMAX  32
 
@@ -128,7 +127,6 @@ extern int litspace;		/* total string space used */
 #define	wqstat		5
 #define	litabsz		512
 #define	litmax		litabsz-1
-
 
 #define	linesize	512	/* hope this is enough :) */
 
@@ -197,8 +195,6 @@ extern char		macltab[256];
 extern int		wq[wqtabsz];
 extern struct hashent * lvtab[128];
 extern char		outq[OUTQSZ];
-
-
 extern struct hashent * htab[HTABSZ];
 extern char *		macarg[MACARGSZ];
 extern char *		machtab[HTABSZ];
@@ -246,17 +242,13 @@ extern uintptr_t	nxtlab,
 extern struct filent	filetab[MAXFILES];
 extern int	ifile;
 
-
 extern FILE *	inp;
 extern FILE *	output;
-
 
 extern int	ln;
 extern char *	fin;
 
-
 extern char	fname[80];
-
 
 extern uintptr_t curtok;
 extern uintptr_t curval;
@@ -273,13 +265,10 @@ extern char *	incl_dir;	/* dir for include files */
 
 extern char	source;		/* put source in m65 file as comments */
 
-
 char *	Gmalloc(int );
 char *	Lmalloc(int );
 
-
 #define dbgprintf(foo,bar) {}
-
 
 /* this struct added by jrd, used in unified code-generation stuff.  see
    exp1, exp2, exp3.  */
@@ -288,7 +277,6 @@ struct op_alist
   uintptr_t tok;			/* token representing op */
   void (* gen)();		/* generator function that goes with it */
 };
-
 
 extern int register_base;
 #define REGISTER_BASE 8		/* start at $08 with registers */
