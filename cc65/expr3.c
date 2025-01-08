@@ -84,18 +84,19 @@ hie11(struct expent *lval)
 
         needbrack(RBRACK);
         if ((tptr = lval->e_tptr)[0] & T_POINTER) {
-          if (tptr[0] == T_ARRAY)
+          if (tptr[0] == T_ARRAY){
             lval->e_tptr += 3;
+          }
           cscale(&lval2, SizeOf(++lval->e_tptr));
-          if ((lval2.e_flags == E_MCONST) &&
-              (lval2.e_const == 0)) {
+          if ((lval2.e_flags == E_MCONST) && (lval2.e_const == 0)) {
             popsp();
             outqi = svptr;
             goto end_array;
           }
         } else if ((tptr2 = lval2.e_tptr)[0] & T_POINTER) {
-          if (tptr2[0] == T_ARRAY)
+          if (tptr2[0] == T_ARRAY){
             lval2.e_tptr += 3;
+          }
           swapstk();
           scale(SizeOf(++lval2.e_tptr));
           lval->e_tptr = lval2.e_tptr;
@@ -165,7 +166,8 @@ primary(struct expent *lval)
      * check global symbol table.
      */
     if (psym->flag.g != 0) {
-      if ((type = psym->flag.g) & SC_STRUCT) {
+      type = psym->flag.g;
+      if (type & SC_STRUCT) {
         Error("struct tag/fld cannot be primary");
         return (0);
       }
@@ -334,7 +336,7 @@ store(struct expent *lval)
 /*
   exprhs( k, lval )
 */
-void immed(uintptr_t);
+
 void
 exprhs(int k, struct expent *lval)
 {

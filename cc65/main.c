@@ -370,7 +370,6 @@ compile(int n_xmacro, char *xmacro[])
    */
   dumpstruct();
 
-
   /*
    * Dump literal pool.
    */
@@ -813,12 +812,6 @@ declstruct(struct hashent *last, int strtype)
 
       last->link = psym;
       last = psym;
-
-      //printf("main: %s of struct %s ", psym->name, sn->name);
-      //if (sadr)
-//->      printf(" type struct %s", sadr->name);
-      //printf("\n");
-
       offset = strtype == T_STRUCT ? sz : 0;
       addsfld(psym, tarray, offset, sn, sadr);
       offset = SizeOf(tarray);

@@ -426,6 +426,7 @@ SizeOf(char *tarray)
       /* jrd hacked this */
       p = (struct hashent *)(((uintptr_t)decode(tarray)) + (uintptr_t)gblspace);
       /* use offset, not addr */
+//->      printf("size %d %p\n",p->data.g,tarray);
       return (p->data.g);
     }
 

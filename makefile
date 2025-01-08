@@ -20,8 +20,8 @@ install:
 	$(MAKE) -C libsrc install
 	$(MAKE) -C libsrc/lynx install
 .ONESHELL:
-demos:
-	@$(MAKE) -C examples.c65
+demos: install
+	@$(MAKE) -C examples.c65 all
 	$(MAKE) -C examples.c65/demos
 
 .ONESHELL:

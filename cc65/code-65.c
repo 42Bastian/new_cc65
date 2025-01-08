@@ -63,14 +63,14 @@ oljsrpop(char *str)
 
 /* helper for konst1 */
 void
-olstrdnl(char *str, uintptr_t num)
+olstrdnl(char *str, int num)
 {
   ot(str);
   outdecnl(num);
 }
 
 void
-outabsdecl(char *n, uintptr_t value)
+outabsdecl(char *n, int value)
 {
   outchar('_');
   ot(n);
@@ -96,7 +96,7 @@ olxxxlo()
 }
 
 void
-konst1(uintptr_t k)
+konst1(int k)
 {
   xxhi = k >> 8;
   xxlo = k & 0xFF;
@@ -115,9 +115,9 @@ konst1(uintptr_t k)
 }
 
 void
-konst3(uintptr_t k)
+konst3(int k)
 {
-  olstrdnl("\tldy\t#", k);
+  olstrdnl("\tLDY\t#", k);
 }
 
 char efn[] = {'e', 'n', 't', 'e', 'r', 'f', 'u', 'n'};
@@ -144,7 +144,7 @@ startfun(char *name, int flag)
 }
 
 /* util function */
-inline uintptr_t
+inline int
 char_t_p(char *tptr)
 {
   return ((tptr[0] & ~T_UNSIGNED) == T_CHAR);
@@ -203,7 +203,7 @@ getlmem(uintptr_t lbl, char *tptr, char test_p)
 /* and another... */
 
 void
-konst3s(uintptr_t offs)
+konst3s(int offs)
 {
   konst3(offs - oursp);
 }
@@ -233,7 +233,7 @@ void lda_helper(char *typestring, char *ext)
   into the primary register
 */
 void
-getladr(uintptr_t offs)
+getladr(int offs)
 {
   konst3s(offs);                /* load Y with offset value */
   oljsr("locysp");              /* and compute location of SP@(Y) */
@@ -244,7 +244,7 @@ getladr(uintptr_t offs)
   Fetch specified local object (local var).
 */
 void
-getloc(uintptr_t offs, char *tptr)
+getloc(int offs, char *tptr)
 {
 
   //konst3s(offs);              /* load Y with offset value */
@@ -279,7 +279,7 @@ getloc(uintptr_t offs, char *tptr)
   Put data into local object.
 */
 void
-putloc(uintptr_t offs, char *tptr)
+putloc(int offs, char *tptr)
 {
   /* konst3s(offs); *//* load Y with offset value */
   /* oljsr((char_t_p(tptr) ? "staysp" : "staxysp")); */
@@ -317,7 +317,7 @@ putmem(char *lab, char *tptr)
   local static memory cell
 */
 void
-putlmem(uintptr_t lab, char *tptr)
+putlmem(int lab, char *tptr)
 {
   ot("\tsta\t");
   outlabnl(lab);
@@ -423,7 +423,7 @@ rstr()
 char LDAX[] = "\tldax\t#\0";
 
 void
-immed(uintptr_t i)
+immed(int i)
 {
   olstrdnl(LDAX, i);
 }
@@ -434,13 +434,13 @@ immedgbl(uintptr_t i)
   outgblnl((char *)i);
 }
 void
-immedlab(uintptr_t i)
+immedlab(int i)
 {
   ot(LDAX);
   outlabnl(i);
 }
 void
-immedslt(uintptr_t i)
+immedslt(int i)
 {
   ot(LDAX);
   outslt(i);
@@ -494,7 +494,7 @@ call(char *lbl, int narg)
 
 /* Return from subroutine */
 void
-ret(uintptr_t ret)
+ret(int ret)
 {
   if (interrupt)
     ol("\trts");
@@ -510,7 +510,7 @@ ret(uintptr_t ret)
   This really calls value in AX
 */
 void
-callstk(uintptr_t narg)
+callstk(int narg)
 {
 
   if (!findmac("NOARGC"))       /* don't generate argc if suppressed */
@@ -522,7 +522,7 @@ callstk(uintptr_t narg)
 
 /* Jump to specified internal label number */
 void
-jump(uintptr_t label)
+jump(int label)
 {
   ot("\tlbra\t");
   outlabnl(label);
@@ -539,7 +539,7 @@ casejump()
   truejump -- jump to lable if p nz
 */
 void
-truejump(uintptr_t label, int invert)
+truejump(int label, int invert)
 {
   if (invert)
     falsejump(label, 0);
@@ -554,7 +554,7 @@ truejump(uintptr_t label, int invert)
   falsejump -- jump to lable if AX is zero
 */
 void
-falsejump(uintptr_t label, int invert)
+falsejump(int label, int invert)
 {
 
   if (invert){
@@ -590,7 +590,7 @@ otx(char *str)
 }
 
 void
-mod_internal(uintptr_t k, char *verb1, char *verb2)
+mod_internal(int k, char *verb1, char *verb2)
 {
   if (k <= 8) {
     otx(verb1);
@@ -603,9 +603,9 @@ mod_internal(uintptr_t k, char *verb1, char *verb2)
 }
 
 int
-modstk(uintptr_t newsp)
+modstk(int newsp)
 {
-  uintptr_t k;
+  int k;
 
   if ((k = (newsp - oursp)) > 0) {
     mod_internal(k, "inc", "addy");
@@ -624,7 +624,7 @@ doublereg()
 }
 
 void
-incprim(uintptr_t n)
+incprim(int n)
 {
   if (n < 256) {
     konst3(n);
@@ -636,7 +636,7 @@ incprim(uintptr_t n)
   }
 }
 void
-decprim(uintptr_t n)
+decprim(int n)
 {
   if (n < 256) {
     konst3(n);
@@ -775,7 +775,7 @@ asl()
 }
 
 void
-aslprim(uintptr_t n)
+aslprim(int n)
 {
   konst3(n);
   oljsr("aslaxy");
@@ -913,11 +913,11 @@ static char xd0 = '\0';
 #endif
 
 void
-outdec(uintptr_t numbr)
+outdec(int numbr)
 {
   char dummy[32];
 
-  sprintf(dummy, "%lu", numbr);
+  sprintf(dummy, "%u", numbr);
 
   ot(dummy);
 }
@@ -961,20 +961,20 @@ outdec(uintptr_t numbr)
 #endif
 
 void
-outdecnl(uintptr_t n)
+outdecnl(int n)
 {
   outdec(n);
   nl();
 }
 
 void
-outcch(uintptr_t numbr)
+outcch(int numbr)
 {
   outdec(numbr);
 }
 
 void
-outlabledef(uintptr_t lbl, uintptr_t value)
+outlabledef(int lbl, int value)
 {
   outchar('L');
   outdec(lbl);
@@ -983,34 +983,34 @@ outlabledef(uintptr_t lbl, uintptr_t value)
 }
 
 void
-outlab(uintptr_t lbl)
+outlab(int lbl)
 {
   outchar('L');
   outdec(lbl);
 }
 
 void
-outlabnl(uintptr_t lbl)
+outlabnl(int lbl)
 {
   outlab(lbl);
   nl();
 }
 
 void
-outcdf(uintptr_t labl)
+outcdf(int labl)
 {
   outlab(labl);
   ol(":");
 }
 
 void
-outdat(uintptr_t n)
+outdat(int n)
 {
   ol(";;; outdat");
 }
 
 void
-outslt(uintptr_t n)
+outslt(int n)
 {
   /* this seems to get used for constant string values? */
   outlab(litlab);               /* output current lit pool labl */
@@ -1021,7 +1021,7 @@ outslt(uintptr_t n)
 
 /* reserve static storage, n bytes */
 void
-outsp(uintptr_t n)
+outsp(int n)
 {
   //ol("\tbss");
   ot("\tds\t");
@@ -1131,7 +1131,6 @@ outgblc(char *name)
 void
 outgoe(char *sname)
 {
-
   ot("\tglobal\t");
   outgblnl(sname);
 }
@@ -1139,7 +1138,6 @@ outgoe(char *sname)
 void
 outext(char *sname)
 {
-
   ot("\txref\t");
   outgblnl(sname);
 }
