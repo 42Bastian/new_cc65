@@ -34,14 +34,13 @@ int matha     at 0xfc52,
   hoff      at 0xfc04,
   voff      at 0xfc06;
 uchar *sprbase  at 0xfc08;
-uchar *collbase at 0xfc0a,
-  *scbnext  at 0xfc10;
+uchar *collbase at 0xfc0a;
+uchar *scbnext  at 0xfc10;
 int   colloff   at 0xfc24;
-
-uchar sprsys    at 0xfc92,
-  joystick  at 0xfcb0,
-  switches  at 0xfcb1,
-  cart0     at 0xfcb2;
+uchar sprsys    at 0xfc92;
+uchar joystick  at 0xfcb0;
+uchar switches  at 0xfcb1;
+uchar cart0     at 0xfcb2;
 
 /* mikey */
 
@@ -53,7 +52,8 @@ struct _timer{
   uchar control2;
 };
 
-struct _timer timer0    at 0xfd00, hbl_timer at 0xfd00,
+struct _timer
+  timer0    at 0xfd00,  hbl_timer at 0xfd00,
   timer1    at 0xfd04,
   timer2    at 0xfd08, vbl_timer at 0xfd08,
   timer3    at 0xfd0c,
@@ -74,7 +74,8 @@ struct _audio{
   uchar other;
 };
 
-struct _audio channelA    at 0xfd20,
+struct _audio
+  channelA    at 0xfd20,
   channelB    at 0xfd28,
   channelC    at 0xfd30,
   channelD    at 0xfd38,

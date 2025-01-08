@@ -169,7 +169,7 @@ readline()
     }
     len = 0;
     for (;;) {
-      k = (int)fgets(line + len, linesize - len, inp);
+      k = (uintptr_t)fgets(line + len, linesize - len, inp);
       len = strlen(line);
 
       ++ln;

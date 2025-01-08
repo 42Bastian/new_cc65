@@ -10,7 +10,6 @@
   Print error with no prefix.
 */
 void Error(char * msg)
-
 {
   PError("", msg);
 }
@@ -97,8 +96,7 @@ void ersum()
 void PError(char *pfx,char * msg)
 {
   printf("%s, line %d : %s%s\n", fin, ln, pfx, msg);
-  if (verbose)
-  {
+  if (verbose) {
     printf("line: %s\n", line);
     printf("curtok = %lu\n", curtok);
     printf("nxttok = %lu\n", nxttok);

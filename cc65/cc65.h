@@ -155,7 +155,7 @@ struct hashent
   struct
   {
     uintptr_t g;
-    int l;
+    uintptr_t l;
   }data;
   char name[1];
 };
@@ -164,7 +164,7 @@ struct hashent
 struct tok_elt
 {
   char * toknam;
-  int toknbr;
+  uintptr_t toknbr;
 };
 
 struct expent
@@ -177,7 +177,7 @@ struct expent
   unsigned char e_flags;
   unsigned char e_test;
   char * e_tptr;
-  int e_const;
+  uintptr_t e_const;
   struct hashent * typeptr;
 };
 
@@ -235,7 +235,7 @@ extern char *	mline;
 extern int	litptr;
 extern char *	lptr;
 extern char *	mptr;
-extern int	nxtlab,
+extern uintptr_t	nxtlab,
 	oursp,
 	argstk,
 	ncmp,
@@ -285,7 +285,7 @@ char *	Lmalloc(int );
    exp1, exp2, exp3.  */
 struct op_alist
 {
-  int tok;			/* token representing op */
+  uintptr_t tok;			/* token representing op */
   void (* gen)();		/* generator function that goes with it */
 };
 

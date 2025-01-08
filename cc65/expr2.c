@@ -14,9 +14,9 @@
 int hie7(struct expent *lval);
 int hie8(struct expent *lval);
 int hie9(struct expent *lval);
-static void hie10a(struct expent *lval, void (*incptr) (), void (*incint) ());
-static void hie10b(struct expent *lval, int k, void (*incptr) (), void (*incint) ());
-static void hie10c(int tok, struct expent *lval);
+static void hie10a(struct expent *lval, void (*incptr) (int), void (*incint) (int));
+static void hie10b(struct expent *lval, int k, void (*incptr) (int), void (*incint) (int));
+static void hie10c(uintptr_t tok, struct expent *lval);
 int hie10(struct expent *lval);
 
 /* external prototypes */
@@ -166,14 +166,14 @@ hie9(struct expent *lval)
 */
 
 /* various internal functions */
-static void hie10a(struct expent *lval, void (*incptr) (),
-                   void(*incint) ())
-{                               /* guts of inc, dec */
+static void hie10a(struct expent *lval, void (*incptr) (int),
+                   void(*incint) (int))
+{
+  /* guts of inc, dec */
   /*
-    struct expent * lval;
-    int (*incptr) ();     for inc'ing ptrs
-    int (*incint) ();     for inc'ing ints
-  */
+   * struct expent * lval; int (*incptr) ();     for inc'ing ptrs int
+   * (*incint) ();     for inc'ing ints
+   */
   int k;
 
 
@@ -188,15 +188,16 @@ static void hie10a(struct expent *lval, void (*incptr) (),
   if (lval->e_tptr[0] == T_PTR) {
     (*incptr) (SizeOf(lval->e_tptr + 1));
   } else {
-    (*incint) ();
+    (*incint) (0);
   }
   store(lval);
   lval->e_flags = E_MEXPR;
 }
 
-static void hie10b(struct expent *lval, int k, void (*incptr) (),
-                   void(*incint) ())
-{                               /* guts of second inc, dec */
+static void hie10b(struct expent *lval, int k, void (*incptr) (int),
+                   void(*incint) (int))
+{
+  /* guts of second inc, dec */
   gettok();
   if (k == 0) {
     needlval();
@@ -209,7 +210,7 @@ static void hie10b(struct expent *lval, int k, void (*incptr) (),
   if (lval->e_tptr[0] == T_PTR) {
     (*incptr) (SizeOf(lval->e_tptr + 1));
   } else {
-    (*incint) ();
+    (*incint) (0);
   }
   store(lval);
   rstr();
@@ -217,8 +218,9 @@ static void hie10b(struct expent *lval, int k, void (*incptr) (),
 }
 
 static void
-hie10c(int tok, struct expent *lval)
-{                               /* guts of minus, comp */
+hie10c(uintptr_t tok, struct expent *lval)
+{
+  /* guts of minus, comp */
   int k;
 
   gettok();

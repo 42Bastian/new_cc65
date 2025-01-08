@@ -54,7 +54,7 @@ addsfld(struct hashent *psym, char *tarray, int offset,
     struct hashent *psym2 = psym;
     struct hashent **hptr;
 
-    printf("Multiused component\n");
+//->    printf("Multiused component\n");
 
     hashval = hash(psym->name);
     psym = (struct hashent *)Gmalloc(sizeof(struct hashent) + strlen(psym2->name));
@@ -483,7 +483,7 @@ dumploc(struct hashent *pfunc)
   printf("==================================\n");
   for (i = 0; i < lovptr; ++i) {
     psym = lvtab[i];
-    printf("%2d, %4d, ", psym->flag.l, psym->data.l);
+    printf("%2d, %lX, ", psym->flag.l, psym->data.l);
     ptype(psym, psym->tptr.l);
   }
 }

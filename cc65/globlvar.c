@@ -43,7 +43,7 @@ int litspace = 0;               /* total lit space used */
 
 /*      Misc storage    */
 
-int nxtlab,                     /* next avail label # */
+uintptr_t nxtlab,                     /* next avail label # */
   oursp,                        /* compiler relative stk ptr */
   argstk,                       /* function arg sp */
   ncmp,                         /* # open compound statements */

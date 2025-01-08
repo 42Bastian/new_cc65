@@ -6,7 +6,7 @@
 #            97/11/25 B.Schick
 
 CC=gcc
-CFLAGS = -O3 -Wall -ffast-math -fomit-frame-pointer  -fsigned-char
+CFLAGS = -O2 -Wall -ffast-math -fomit-frame-pointer
 LDFLAGS=
 BINDIR = ~/bin
 CP = cp
