@@ -468,22 +468,24 @@ frag_gen_size(struct frag *this_frag, int frag_pc)
       printf("  searching forward for %s\n", sy->name);
 #endif
       for (xfrag = this_frag->f_next; xfrag; xfrag = xfrag->f_next) {
-        if (offset > 124)       /* too big? */
+        if (offset > 124){       /* too big? */
           if ((this_frag->f_value & 0xff) != 0x80)      /* 42BS */
             return (5);         /* yes, assume long br */
           else
             return (3);
-
+        }
         if ((xfrag->type == FRAG_SYMDEF) &&
             (xfrag->f_sym == sy))
           return (2);           /* found it.  short br */
-        if (xfrag->type == FRAG_LONG_BR)
+
+        if (xfrag->type == FRAG_LONG_BR){
           if ((this_frag->f_value & 0xff) != 0x80)      /* 42BS */
             offset += 5;        /* don't recurse */
           else
             offset += 3;
-        else
+        } else {
           offset += frag_gen_size(xfrag, frag_pc);
+        }
 #ifdef DEBUG
         printf("  see frag type %X, offset now %d\n",
                xfrag->type, offset);

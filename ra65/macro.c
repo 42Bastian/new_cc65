@@ -262,13 +262,13 @@ int do_macro() {
 
     ++macro_line_nbr;
 
-    if (verbose > 1)
+    if (verbose > 1){
       //check
       if (disabled)
         printf("%4d:<%s>\n", macro_line_nbr, line);
       else
         printf("%4d:'%s'\n", macro_line_nbr, line);
-
+    }
     parse_line(line, &p, 1);
     //
     //this is for error -messages

@@ -21,14 +21,15 @@ extern short macroCurrFile;
 extern short macroCurrLine;
 extern char * in_name[64];
 
-void barf(char * msg,int arg1,int arg2,int arg3)
+void barf(char * msg,uintptr_t arg1,uintptr_t arg2,uintptr_t arg3)
  {
 //  list_line(1);
   errcount++;
   printf("%s:%d:",CurrentFile,line_nbr);
-  if ( processing_macro )
+  if ( processing_macro ){
     printf("macro(%s,%s,%d):",in_name[macroCurrFile],macroCurrName,macroCurrLine);
-  
+  }
+
   printf("Error:");
   printf(msg, arg1, arg2, arg3);
   printf("\n");
@@ -36,6 +37,6 @@ void barf(char * msg,int arg1,int arg2,int arg3)
 
 void fatal(char *msg)
 {
-  fprintf(stderr,msg);
+  fprintf(stderr,"%s",msg);
   exit(-1);
 }

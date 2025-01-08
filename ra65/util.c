@@ -10,19 +10,7 @@
 #include <ctype.h>
 #include <string.h>
 
-/*
-char char_upcase(c)
-char c;
-{
-  if ((c >= 'a') && (c <= 'z'))
-	c ^= 0x20;
-  return(c);
-}
-*/
-
-int
-string_equal(s1, s2)
-  char *s1, *s2;
+int string_equal(char *s1,char *s2)
 {
   if (strlen(s1) != strlen(s2))
     return (0);
@@ -32,10 +20,7 @@ string_equal(s1, s2)
   return (1);
 }
 
-int
-read_line(f, l)
-FILE * f;
-  char *l;
+int read_line(FILE * f,  char *l)
 {
   int c;
   int ok;

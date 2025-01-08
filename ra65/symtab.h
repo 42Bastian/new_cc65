@@ -44,7 +44,12 @@ struct sym
 #define USED     0x0400
 #define RELATIVE 0x0800     /* this symbol relative to another */
 
-extern SYM * find_sym();
-extern SYM * assign_sym();
+SYM * find_sym(char *name,int new_ok);
+SYM *
+assign_sym(char *name,
+           char *suffix,
+           int value,
+           int no_redef);
+
 extern void NextLocal();
 #endif /*  SYMTAB_H */

@@ -6,7 +6,5 @@
 
 
 /* utils */
-
-extern char char_upcase();
-extern int string_equal();
-extern int read_line();
+int string_equal(char *s1,char *s2);
+int read_line(FILE * f,  char *l);

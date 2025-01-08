@@ -15,7 +15,7 @@
 
 #include <stdlib.h>
 
-#define VERSION "1.0p4 [*nix port by Intruder and 42BS]"
+//->#define VERSION "1.0p4 [*nix port by Intruder and 42BS]"
 #define VERSION "1.2c"
 
 /* #define LIST ... turn this on for listing code */
@@ -57,7 +57,7 @@ void dump_syms();
 int find_udef();
 
 /* error.c */
-void barf(char *msg, int arg1, int arg2, int arg3);
+void barf(char *msg, uintptr_t arg1, uintptr_t arg2, uintptr_t arg3);
 
 /* list.c */
 void init_list();
@@ -198,7 +198,6 @@ main(int argc, char **argv)
     exit(1);
   }
 
-
   init_sym();
 #ifdef LIST
   init_list();
@@ -216,7 +215,6 @@ main(int argc, char **argv)
     output_p = (pass == (gen_n_passes() - 1));
     if (output_p) {
       gen_o_open(&out_name, in_name[0]);
-
     }
     for (fidx = 0; fidx < n_files; fidx++) {
       end_file = 0;
@@ -256,18 +254,21 @@ main(int argc, char **argv)
       }
       fclose(inf);
     }
+
 #ifdef DEBUG
     if (sym_name)
       dump_syms();
 #endif
-    if (output_p)
+    if (output_p){
       gen_o_close();
-
-    if ((i = find_udef()))
+    }
+    if ((i = find_udef())){
       printf("%d undefinded local label(s) !\n", i);
+    }
 
-    if (errcount)
+    if (errcount){
       printf("%d error(s) !\n", errcount);
+    }
   }
   if (errcount) {
     unlink(out_name);
