@@ -385,12 +385,12 @@ pusha:
 pushax:
 ;        jsr     decsp2  ;               KAO     3 bytes shorter
         tay
-				sec
-				lda sp
+	sec
+	lda sp
         sbc #2
-				sta sp
-				bcs .l1
-				dec sp+1
+	sta sp
+	bcs .l1
+	  dec sp+1
 .l1     tya
         sta (sp)        ; sta (sp)   KAO    10 cycles faster
         pha
