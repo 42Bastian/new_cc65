@@ -1,5 +1,5 @@
 
-/*	C I/O functions	*/
+/*      C I/O functions */
 
 #include <stdio.h>
 
@@ -32,17 +32,17 @@ int outcnt = 0;
 
 
 /* not used?
-char	ascii_tab[128] =
-    {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0
-    };
+   char ascii_tab[128] =
+   {
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0,
+   0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1,
+   0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0
+   };
 */
 
 /*
@@ -50,10 +50,10 @@ char	ascii_tab[128] =
   Test if given character is alpha.
 */
 /* not used...
-int alpha(int c)
-{
-    return( ascii_tab[c] & 1 );
-}
+   int alpha(int c)
+   {
+   return( ascii_tab[c] & 1 );
+   }
 */
 
 /*
@@ -61,10 +61,10 @@ int alpha(int c)
   Test if given character is numeric
 */
 /* not used
-int numeric(int c)
-{
-    return( ascii_tab[c] & 2 );
-}
+   int numeric(int c)
+   {
+   return( ascii_tab[c] & 2 );
+   }
 */
 
 /*
@@ -72,11 +72,11 @@ int numeric(int c)
   Test if given character is alphanumeric
 */
 /* not used
-an(c)
-int	c;
-{
-    return( ascii_tab[c] );
-}
+   an(c)
+   int  c;
+   {
+   return( ascii_tab[c] );
+   }
 */
 
 /*
@@ -84,19 +84,19 @@ int	c;
   Print a string followed by a carriage return.
 */
 /* not used?
-pl(str)
-char * str;
-{
-    printf("%s\n", str);
-}
+   pl(str)
+   char * str;
+   {
+   printf("%s\n", str);
+   }
 */
 
 /* apparently, all callers of this have been redefined
    with defines....
-ch()
-{
-    return( *lptr & 0xFF );
-}
+   ch()
+   {
+   return( *lptr & 0xFF );
+   }
 */
 
 
@@ -157,46 +157,44 @@ do_kill()
 int
 readline()
 {
-  int k;
+  char *result;
   int len;
   struct filent *pftab;
 
   while (1) {
     do_kill();
-    if (inp == 0) {
+    if (inp == NULL) {
       eof = 1;
       return (0);
     }
     len = 0;
     for (;;) {
-      k = (uintptr_t)fgets(line + len, linesize - len, inp);
+      result = fgets(line + len, linesize - len, inp);
       len = strlen(line);
 
       ++ln;
-      if (k <= 0) {		/* eof? */
-	line[len] = '\0';
-	cclose(inp);
-/*	    fclose(inp);	*/
+      if (result == NULL) {             /* eof? */
+        cclose(inp);
 
-	if (ifile > 0) {
-	  inp = (pftab = &filetab[--ifile])->f_iocb;
-	  ln = pftab->f_ln;
-	  fin = pftab->f_name;
-	} else {
-	  inp = 0;
-	}
+        if (ifile > 0) {
+          inp = (pftab = &filetab[--ifile])->f_iocb;
+          ln = pftab->f_ln;
+          fin = pftab->f_name;
+        } else {
+          inp = 0;
+        }
       } else {
-	line[len - 1] = '\0';
+        line[len - 1] = '\0';
 
-	if (source && (strlen(line) > 0)) {
-	  ot(";");
-	  ol(line);
-	}
+        if (source && (strlen(line) > 0)) {
+          ot(";");
+          ol(line);
+        }
       }
       if (line[len - 2] == '\\')
-	len -= 2;
+        len -= 2;
       else
-	break;
+        break;
     }
 
     if (len) {
@@ -216,7 +214,7 @@ flushout()
   *outqi = '\0';
   //peephole(outq);
 //optimizer now extern:xopt ! !
-    sout(outq);
+  sout(outq);
   outqi = outq;
 }
 
@@ -251,6 +249,7 @@ cout( char ch)
 void
 sout( char *s)
 {
-  while (*s)
+  while (*s){
     cout(*s++);
+  }
 }

@@ -1,6 +1,6 @@
 
 /*
-   Misc cruft used by cross-compiler variant of CC65
+  Misc cruft used by cross-compiler variant of CC65
 */
 
 #include <stdio.h>
@@ -24,7 +24,7 @@ int is_power_of_two(int n);
 int matchstr(char * line,char * str); // this is move from optimize.c !
 
 /* return t if if line matches str */
- 
+
 int matchstr(char * line,char * str)
 {
   for(; *str; ++line, ++str)
@@ -34,32 +34,32 @@ int matchstr(char * line,char * str)
 }
 
 /*
-bzero(char *dest, int len)
-{
-memset(dest, 0, len);
-}
+  bzero(char *dest, int len)
+  {
+  memset(dest, 0, len);
+  }
 */
 
 FILE * copen(char * file,char mode)
 {
-char m[5];
-FILE * p;
+  char m[5];
+  FILE * p;
 
   m[0] = mode;
   m[1] = '\0';
   if ((p = fopen(file, m)) == NULL)
-    {
-      return ((FILE *) 0);	/* was -1 -- jrd */
-    }
+  {
+    return ((FILE *) 0);        /* was -1 -- jrd */
+  }
   else
-    {
-      return (p);
-    }
+  {
+    return (p);
+  }
 }
 
 int cclose(FILE * x)
 {
-  return(fclose(x));
+  return fclose(x);
 }
 
 void cprints(char * s)
@@ -97,7 +97,7 @@ int is_digit(int c)
 }
 
 int tolower(int c)
- 
+
 {
   if ((c >= 'A') && (c <= 'Z'))
     return(c + 32);
@@ -115,18 +115,17 @@ int toupper(int c)
 
 int is_power_of_two(int n)
 {
-int c = 0;
+  int c = 0;
   if ( n == 0)
     return 0;
-    
+
   while ( (n & 1) == 0 )
-    {
+  {
     n >>= 1;
     ++c;
-    }
+  }
   if ( n == 1)
     return c;
   else
     return 0;
 }
-

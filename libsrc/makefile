@@ -14,6 +14,9 @@ CP= cp
 RM = rm -f
 
 
+export CC65INCLUDE=$(TOP)/include
+export CC65LIB=$(TOP)/lib
+
 BINDIR = $(TOP)/lib
 
 GLOBAL = $(TOP)/runtime/global.m65
@@ -23,10 +26,10 @@ GLOBAL = $(TOP)/runtime/global.m65
 .ONESHELL:
 %.obj: %.c
 	@echo "Building $*"
-	CC65INCLUDE=$(TOP)/include $(CC) $<
+	$(CC) $<
 	$(XOPT) $*.m65
 	$(AS) -o $@ $(GLOBAL) ../runtime/labels.m65 $*.m65
-#	$(RM) $*.m65
+	$(RM) $*.m65
 
 %.obj: %.m65 $(GLOBAL)
 	@$(AS) -o $@  $(GLOBAL) ../runtime/labels.m65 $<
@@ -59,6 +62,7 @@ c.olb : $(C_OBJS) $(M65_OBJS)
 
 .ONESHELL:
 clean:
-	@$(RM) *.obj
-	$(RM) *.bak
+	$(RM) *.obj
+	$(RM) *.bak *~
 	$(RM) c.olb
+	$(RM) $(C_OBJS:.obj=.m65)

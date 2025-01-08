@@ -2,7 +2,6 @@
 #include <runtime.h>
 
 /* lynx specifc definitions */
-
 #ifndef __LYNX__
 
 #define __LYNX__

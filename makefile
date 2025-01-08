@@ -14,8 +14,8 @@ info:
 
 .ONESHELL:
 install:
-	@$(MAKE) -C cc65 install
-	$(MAKE) -C ra65 install
+	@$(MAKE) -C cc65 install -j
+	$(MAKE) -C ra65 install -j
 	$(MAKE) -C runtime install
 	$(MAKE) -C libsrc install
 	$(MAKE) -C libsrc/lynx install

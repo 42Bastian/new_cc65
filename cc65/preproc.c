@@ -292,7 +292,6 @@ preprocess()
   lptr = line;
   skip = 0;
   while ((c = ch()) == '\0' || c == '#' || skip) {
-
     if (c == '#') {
       ++lptr;
       skipblank();
@@ -386,8 +385,9 @@ preprocess()
         }                       /* end of case on directive */
     }
     if (readline() == 0) {
-      if (i_ifdef >= 0)
+      if (i_ifdef >= 0){
         Missing("#endif");
+      }
       return;
     }
   }

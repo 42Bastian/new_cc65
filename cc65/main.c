@@ -332,8 +332,8 @@ compile(int n_xmacro, char *xmacro[])
   glvptr = NULL;
 
   i_ifdef = -1;
-  litlab =                      /* hotwire literal pool label */
-    nxtlab = 1;
+  litlab = 1;                     /* hotwire literal pool label */
+  nxtlab = 1;
 
   bzero(machtab, 256);
   bzero(macltab, 256);
@@ -380,7 +380,6 @@ compile(int n_xmacro, char *xmacro[])
    * Dump external names.
    */
   dumpnams();
-
 
   if (stats) {
     struct hashent *p;
