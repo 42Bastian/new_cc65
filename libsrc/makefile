@@ -1,24 +1,25 @@
 #
 # makefile for CC65 runtime library
 #
-CC = cc65
-LINK= link65
-AR= libr65
-AS= ra65
+CC = $(TOP)/bin/cc65
+LINK= $(TOP)/bin/link65
+AR= $(TOP)/bin/libr65
+AS= $(TOP)/bin/ra65
+XOPT=$(TOP)/bin/xopt
 CP= cp
 RM = rm -f
 
 
-BINDIR = ../lib
+BINDIR = $(TOP)/lib
 
-GLOBAL = ../runtime/global.m65
+GLOBAL = $(TOP)/runtime/global.m65
 
 .SUFFIXES: .com .obj .m65 .c
 
 .ONESHELL:
 %.obj: %.c
 	@$(CC) $<
-	xopt $*.m65
+	$(XOPT) $*.m65
 	$(AS) -o $@ $(GLOBAL) ../runtime/labels.m65 $*.m65
 	$(RM) $*.m65
 

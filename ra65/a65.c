@@ -13,6 +13,7 @@
   a65 [-o foo.obj] [-l foo.l] f1.m65 f2.m65...
 */
 
+#include <stdint.h>
 #include <stdlib.h>
 
 //->#define VERSION "1.0p4 [*nix port by Intruder and 42BS]"

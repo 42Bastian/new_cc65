@@ -6,6 +6,8 @@
 
 /* global vars for a65 */
 
+#include <stdint.h>
+
 //#define DEBUG
 #define LIST
 
@@ -35,7 +37,7 @@ ID int  page_nbr;		/* page number */
 ID int  line_in_page;
 
 ID int  errcount;
-ID char * CurrentFile; 
+ID char * CurrentFile;
 ID char output_p;		/* flag for generating output */
 
 /* conditional stuff */

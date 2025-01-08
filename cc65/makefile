@@ -8,7 +8,7 @@
 CC=gcc
 CFLAGS = -O2 -Wall -ffast-math -fomit-frame-pointer
 LDFLAGS=
-BINDIR = ~/bin
+BINDIR = $(TOP)/bin
 CP = cp
 RM = rm -f
 EXT = #.exe

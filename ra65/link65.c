@@ -31,6 +31,7 @@
 #ifdef UNIX
 #include <unistd.h>
 #endif
+#include <stdint.h>
 
 #ifndef O_BINARY
 #define O_BINARY 0

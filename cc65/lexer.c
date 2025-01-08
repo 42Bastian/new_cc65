@@ -17,7 +17,7 @@
 static int asm_unkludge();
 void gettok();
 void under();
-void symbol();
+static void symbol();
 void ident();
 void rettok(int tok);
 void dollar();
@@ -216,8 +216,7 @@ under()
   nxttok = IDENT;
 }
 
-void
-symbol()
+void symbol()
 {
   char token[NAMESIZE];
 
