@@ -50,6 +50,7 @@ minimal.obj : minimal.c title.obj
 
 title.obj:
 	@sprpck -c -p0 title.pcx
+	$(TOP)
 
 .ONESHELL:
 clean :

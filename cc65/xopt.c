@@ -17,7 +17,7 @@
     97/12/10  42BS  Zero-Byte stored behind the read-file because of a possible
               CR LF => LF conversion
 */
-#define VERSION "1.06"
+#define VERSION "1.06-64"
 
 #include <stdio.h>
 #include <string.h>

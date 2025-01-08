@@ -37,21 +37,13 @@ clean:
 	touch bin/dummy
 
 .ONESHELL:
-_src:
-	@touch bin/dummy
-	@touch lib/dummy
-	@cd ..;\
-	zip -r -u newcc65src newcc65/cc65/ newcc65/ra65 newcc65/libsrc \
-               newcc65/examples.c65 newcc65/include newcc65/bin/dummy \
-               newcc65/doc newcc65/lib/dummy;\
-	zip -r -u newcc65src\
-               newcc65/readme.txt newcc65/makefile newcc65/addenum.txt newcc65/changes* newcc65/install.txt \
-               newcc65/runtime;\
-	cd newcc65
-	@rm bin/dummy lib/dummy
+_src: clean
+	cd ..
+	7z a newcc65src new_cc65
+	cd $(TOP)
 
 .ONESHELL:
-_bin:
-	@cd ..;\
-	zip -r newcc65bin newcc65/bin newcc65/lib;\
-	cd newcc65
+_bin: install
+	@cd ..
+	7z a newcc65bin.7z new_cc65/bin new_cc65/lib
+	cd new_cc65

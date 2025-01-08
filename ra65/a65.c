@@ -17,7 +17,7 @@
 #include <stdlib.h>
 
 //->#define VERSION "1.0p4 [*nix port by Intruder and 42BS]"
-#define VERSION "1.2c"
+#define VERSION "1.2c-64"
 
 /* #define LIST ... turn this on for listing code */
 /* #define EITHER .. turn this if ever get around to making the

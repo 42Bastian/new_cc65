@@ -1,7 +1,7 @@
 // this file is compiled whenever an object file is changed
 #include <stdio.h>
 
-#define VERSION "2.1.3"
+#define VERSION "2.1.3-64"
 
 void version(void)
 {

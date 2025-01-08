@@ -11,7 +11,7 @@
 /* object library maintainer for atari 8-bit .obj files.
    later, maybe random other kinds of files too. */
 
-#define VERSION "1.1.1 [*nix]"
+#define VERSION "1.1.1-64"
 
 #include <stdio.h>
 #include <ctype.h>

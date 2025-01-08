@@ -8,7 +8,7 @@ int mathe2 at 0xfc61;
 /* fix-point with 8.8 */
 
 uchar iter(r0,i0)
-int r0,i0
+     int r0,i0
 {
   zstatic uchar h;
   zstatic int r1,r2,i1,i2;
@@ -17,7 +17,7 @@ int r0,i0
   i1=i0;
   h = 15;
   do{
-/* don't reverse this, because mathb hase to be written last ! */
+    /* don't reverse this, because mathb has to be written last ! */
     mathb = matha = r1;
     WAITSUZY; /* asm-macro, see lynx.h */
     r2 = mathe2;
@@ -28,13 +28,13 @@ int r0,i0
 
     if ( (r2 + i2) > 1024 ) return h;
 
-/* start multiplication */
+    /* start multiplication */
     matha = r1; mathb = i1;
 
-/* let suzy do */
+    /* let suzy do */
     r1 = r2 - i2 + r0;
 
-/* ok, suzy should be ready now */
+    /* ok, suzy should be ready now */
     i1 = (mathe2<<1) + i0;
   }while ( --h );
   return 0;
@@ -47,15 +47,15 @@ char pal[]={
 
 main()
 {
- zstatic uchar x,y; // placed in BSS
+  zstatic uchar x,y; // placed in BSS
 
- zstatic int rmin,imin,idelta,rdelta;
+  zstatic int rmin,imin,idelta,rdelta;
 
   InitIRQ();
   InstallUploader(_62500Bd);
   CLI;
 
-/* set screen-base */
+  /* set screen-base */
   SetBuffers(screen,(char *) 0,(char *) 0);
 
   sprsys = _sprsys |= 0x80; /* signed math */
@@ -64,14 +64,15 @@ main()
 
   _SetRGB(pal); /* asm-macro not lib-function */
 
-  for(;;)
-  {
+  for(;;) {
     DrawFBox(0,0,160,102,0);
 
-    for( y = 0 , imin = -300 ;  102 > y ; ++y,imin += idelta )
-                            /*  ^^^^^^^^ strange,uh ?. But xopt likes it ! */
-      for ( x = 0 , rmin = -600;  160 > x ; ++x,rmin += rdelta )
+    for( y = 0 , imin = -300 ;  102 > y ; ++y,imin += idelta ){
+      /*  ^^^^^^^^ strange,uh ?. But xopt likes it ! */
+      for ( x = 0 , rmin = -600;  160 > x ; ++x,rmin += rdelta ){
         SetPixel(x,y,iter(rmin,imin));
+      }
+    }
 
     while (!joystick) ;
 

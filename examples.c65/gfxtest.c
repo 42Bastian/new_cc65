@@ -18,20 +18,20 @@
 /* fill the screen with a pattern */
 
 struct point
-  {
+{
   uchar x,y;
-  };
-  
+};
+
 struct box
-  {
-  struct point a;  
+{
+  struct point a;
   uchar w,h;
-  };
+};
 
 MakePattern()
 {
-zstatic struct point p;
-                
+  zstatic struct point p;
+
   for (p.x = 0; 160 > p.x ; ++p.x)
     for (p.y = 0; 102 > p.y ; ++p.y)
       SetPixel(p.x,p.y,p.x^p.y);
@@ -39,17 +39,17 @@ zstatic struct point p;
 
 Lines()
 {
-zstatic uchar x,y;
+  zstatic uchar x,y;
 
   for (x = 0; 160 > x ; ++x)
     DrawLine(x,0,159-x,101,x);
   for (y = 0; 102 > y ; ++y)
-    DrawLine(0,y,159,101-y,y); 
+    DrawLine(0,y,159,101-y,y);
 }
 
 DrawBox(b,c)
-struct box *b;
-uchar c;
+     struct box *b;
+     uchar c;
 {
   DrawFBox(b->a.x,b->a.y,b->w,b->h,c);
 }
@@ -59,23 +59,23 @@ Boxes()
   zstatic uchar x;
   zstatic struct box b;
   for ( x = 0 ; 51 > x  ; ++x)
-  {
-    b.a.x = x;
-    b.a.y = x;
-    b.w = 160-(x<<1);
-    b.h = 102-(x<<1);
-    DrawBox(&b,x & 0xf);
-   }
+    {
+      b.a.x = x;
+      b.a.y = x;
+      b.w = 160-(x<<1);
+      b.h = 102-(x<<1);
+      DrawBox(&b,x & 0xf);
+    }
 }
 
 /* wait for a button */
 
 char WaitButton()
 {
-zstatic uchar key;
+  zstatic uchar key;
   while ( !(key = joystick))
-   ;
-/* wait for the button to be released */
+    ;
+  /* wait for the button to be released */
   while ( joystick )
     ;
   return key;
@@ -84,14 +84,13 @@ zstatic uchar key;
 
 doit()
 {
-zstatic uchar c;
+  zstatic uchar c;
 
   do{
-  c = (c+1) & 3;
+    c = (c+1) & 3;
   }while (3 == c);
 
-  switch (c)
-  {
+  switch (c) {
   case 0:
     MakePattern(); break;
   case 1:
@@ -105,20 +104,20 @@ zstatic uchar c;
 
 main()
 {
- InitIRQ();
- InstallUploader(_62500Bd);
- CLI;
+  InitIRQ();
+  InstallUploader(_62500Bd);
+  CLI;
 
-/* set up buffer : display buffer == render buffer, no collision buffer */
+  /* set up buffer : display buffer == render buffer, no collision buffer */
   SetBuffers(SCREEN,(char *)0,(char *)0 );
 
-/* clear the screen */
+  /* clear the screen */
   DrawFBox(0,0,160,102,15);
 
-/* set the palette */
+  /* set the palette */
   _SetRGB(DefaultPAL);
 
- for ( ; ; )
-   doit();
+  for ( ; ; )
+    doit();
 
 }

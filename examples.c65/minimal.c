@@ -2,6 +2,7 @@
 #include <lynxlib.h>
 
 extern char titelSCB[];
+
 #asm
           xref _title
 
@@ -15,10 +16,8 @@ _titelSCB dc.b $c0,$10,$20
 
 main()
 {
-register uchar x,y,c;
-
-//  InitIRQ();
-//  InstallUploader(_62500Bd);
+  InitIRQ();
+  InstallUploader(_62500Bd);
   CLI;
   SetBuffers(0x9000,0,0);
 

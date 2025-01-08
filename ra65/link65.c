@@ -17,7 +17,7 @@
 */
 /* Linker for .obj files produced by ra65 */
 
-#define VERSION "2.3b"
+#define VERSION "2.3b-64"
 #define RUNTIME "runtime.run"   /* 42BS */
 #define BLL                     /* generate BLL-header */
 
