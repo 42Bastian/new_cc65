@@ -18,27 +18,27 @@ EXECS = ra65$(EXE) printobj$(EXE) link65$(EXE) libr65$(EXE) bin2obj$(EXE)
 all:	$(EXECS)
 
 ra65$(EXE) :   $(OBJS) version.o makefile
-	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(OBJS) version.o
+	@$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(OBJS) version.o
 
 version.o: $(OBJS) makefile
 $(OBJS) : global.h
 .c.o:
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ -c $<
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ -c $<
 
 printobj$(EXE) : printobj.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ printobj.c
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ printobj.c
 
 link65$(EXE) : link65.o obj.h copyleft.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ link65.o copyleft.o
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ link65.o copyleft.o
 
 libr65$(EXE) : libr65.c libr.h obj.h
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ libr65.c
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ libr65.c
 
 bin2obj$(EXE): bin2obj.c
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ bin2obj.c
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ bin2obj.c
 
 install : $(EXECS)
-	$(CP) $? $(BINDIR)
+	@$(CP) $? $(BINDIR)
 
 clean:
-	$(RM) *.o core $(EXECS) compile.err errlist *.bak
+	@$(RM) *.o core $(EXECS) compile.err errlist *.bak

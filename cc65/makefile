@@ -36,7 +36,7 @@ EXECS = cc65$(EXT) xopt$(EXT)
 all : $(EXECS)
 
 cc65$(EXT) : $(OBJS) $(XOBJS) code-65.o
-	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(OBJS) $(XOBJS) code-65.o
+	@$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(OBJS) $(XOBJS) code-65.o
 
 version.o : $(OBJS) code-65.o
 
@@ -45,17 +45,12 @@ $(OBJS) : $(H_SRCS)
 $(XOBJS) : $(H_SRCS)
 
 xopt$(EXT) : xopt.c
-	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $<
+	@$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $<
 
 install : $(EXECS)
-	$(CP) $(EXECS) $(BINDIR)
+	@$(CP) $(EXECS) $(BINDIR)
 
 clean :
-	$(RM) *.o core $(EXECS) compile.err errlist *.bak
+	@$(RM) *.o core $(EXECS) compile.err errlist *.bak
 
-.ONESHELL:
-indent:
-	@for i in $(C_SRCS); do
-	 echo $$i
-	 indent -i2 -nfc1 -ldi2 -di2 $$i
-	done
+#	 indent -i2 -nfc1 -ldi2 -di2 $$i

@@ -1,6 +1,10 @@
 #
 # makefile for CC65 runtime library
 #
+ifndef TOP
+TOP=..
+endif
+
 CC = $(TOP)/bin/cc65
 LINK= $(TOP)/bin/link65
 AR= $(TOP)/bin/libr65
@@ -18,13 +22,14 @@ GLOBAL = $(TOP)/runtime/global.m65
 
 .ONESHELL:
 %.obj: %.c
-	@$(CC) $<
+	@echo "Building $*"
+	CC65INCLUDE=$(TOP)/include $(CC) $<
 	$(XOPT) $*.m65
 	$(AS) -o $@ $(GLOBAL) ../runtime/labels.m65 $*.m65
-	$(RM) $*.m65
+#	$(RM) $*.m65
 
 %.obj: %.m65 $(GLOBAL)
-	$(AS) -o $@  $(GLOBAL) ../runtime/labels.m65 $<
+	@$(AS) -o $@  $(GLOBAL) ../runtime/labels.m65 $<
 
 C_OBJS = atoi.obj iscntrl.obj isprint.obj itox.obj atoib.obj isalnum.obj \
 	iscons.obj ispunct.obj itoab.obj otoi.obj  dtoi.obj \
@@ -47,12 +52,13 @@ M65_OBJS =isalpha.obj isodigit.obj isdigit.obj iswhite.obj \
 #	heap.obj getch.obj parselin.obj tolower.obj \
 
 install : c.olb
-	$(CP) c.olb $(BINDIR)
+	@$(CP) c.olb $(BINDIR)
 
 c.olb : $(C_OBJS) $(M65_OBJS)
-	$(AR) a c.olb $?
+	@$(AR) a c.olb $?
 
+.ONESHELL:
 clean:
-	$(RM) *.obj
+	@$(RM) *.obj
 	$(RM) *.bak
 	$(RM) c.olb

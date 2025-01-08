@@ -1,11 +1,11 @@
-/* prototypes for C.OLB               
-   written : 98/01/28 42Bastian Schick 
+/* prototypes for C.OLB
+   written : 98/01/28 42Bastian Schick
 
   42BS    42Bastian Schick <elw5basc@gp.fht-esslingen.de>
 
   changes :
 
-*/  
+*/
 #ifndef __C_OLB__
 #define __C_OLB__
 
