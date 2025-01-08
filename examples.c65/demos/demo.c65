@@ -16,7 +16,7 @@
 /* #define DEMO3 1 */     /* random mazes */
 
 #ifdef  DEMO0
-extern char image[]; 
+extern char image[];
 extern char image_scb[];
 #asm
 		data
@@ -32,7 +32,7 @@ _image_scb:
                 dc.b $89,$AB,$CD,$EF            ; palette redir.
 		text
 #endasm
-                
+
 #endif
 
 #define SCREEN_ADDR 0x8000
@@ -57,7 +57,7 @@ register uchar i;
 
 /* set screen base address */
   SetBuffers(SCREEN_ADDR,(uchar *)0,(uchar *)0);
-     
+
 #ifdef DEMO0
 /*
  * demo 0 - draw a picture and scroll it up and down with the
@@ -191,7 +191,7 @@ uchar x,y,v,w;
 maze()
 {
   done = 0;
-  
+
   x = (random()/421)<<1; y = (random()/656)<<1;
 
   while (!done)
@@ -243,7 +243,7 @@ register uchar moves,r,flag;
 
       switch(r)
       {
-      case 0: 
+      case 0:
           if (x && ! GetPixel(x-2,y) )
             {
             SetPixel(x-1, y, 1);
@@ -251,7 +251,7 @@ register uchar moves,r,flag;
             flag = 1;
             }
         break;
-      case 1: 
+      case 1:
           if (y && ! GetPixel(x,y-2))
             {
             SetPixel(x, y-1, 1);
@@ -259,7 +259,7 @@ register uchar moves,r,flag;
             flag = 1;
             }
         break;
-      case 2: 
+      case 2:
           if (x < Xmax && !GetPixel(x+2,y))
             {
             SetPixel(x+1, y, 1);
@@ -340,4 +340,3 @@ register uchar moves;
 }
 
 #endif /* DEMO3 */
-

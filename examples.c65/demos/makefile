@@ -1,6 +1,8 @@
-LD = CC65LIB=../../lib link65 -m
-CC = CC65INCLUDE=../../include cc65
-AS = ra65
+LD = CC65LIB=$(TOP)/lib $(TOP)/bin/link65 -m
+CC = CC65INCLUDE=$(TOP)/include $(TOP)/bin/cc65
+AS = $(TOP)/bin/ra65
+XOPT = $(TOP)/bin/xopt
+
 RM = rm -f
 CFLAGS=
 
@@ -44,37 +46,37 @@ clean :
 
 demo0.obj : demo.c65
 	$(CC) $(CFLAGS) -DDEMO0 demo.c65
-	xopt demo.m65
+	$(XOPT) demo.m65
 	$(AS) demo.m65
 	$(RM) demo.m65
 
 demo1.obj : demo.c65
 	$(CC) $(CFLAGS) -DDEMO1 demo.c65
-	xopt demo.m65
+	$(XOPT) demo.m65
 	$(AS) demo.m65
 	$(RM) demo.m65
 
 demo2.obj : demo.c65
 	$(CC) $(CFLAGS) -DDEMO2 demo.c65
-	xopt demo.m65
+	$(XOPT) demo.m65
 	$(AS) demo.m65
 	$(RM) demo.m65
 
 demo3.obj : demo.c65
 	$(CC) $(CFLAGS) -DDEMO3 demo.c65
-	xopt demo.m65
+	$(XOPT) demo.m65
 	$(AS) demo.m65
 	$(RM) demo.m65
 
 sprite.obj : sprite.c65 sprite.h test.h
 	$(CC) $(CFLAGS)  sprite.c65
-	xopt sprite.m65
+	$(XOPT) sprite.m65
 	$(AS) sprite.m65
 	$(RM) sprite.m65
 
 mazedemo.obj : mazedemo.c65
 	$(CC) $(CFLAGS) mazedemo.c65
-	xopt mazedemo.m65
+	$(XOPT) mazedemo.m65
 	$(AS) mazedemo.m65
 	$(RM) mazedemo.m65
 
