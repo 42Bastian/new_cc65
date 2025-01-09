@@ -156,7 +156,7 @@ findsym(char *sym)
   hashval = hash(sym);
   for (p = htab[hashval]; p != NULL; p = p->ptr) {
     if (!strcmp(p->name, sym)) {
-      return (p);
+      return p;
     }
   }
   return (NULL);
@@ -340,32 +340,18 @@ xmalloc(int nbytes, char **ptr_p, char *limit)
 */
 char *
 Gmalloc(int nbytes)
-#ifndef help_1
 {
   char *p;
-
-
   /* nbytes = (nbytes + sizeof(int) - 1) & (~(sizeof(int) - 1)); */
   nbytes += sizeof(char *) - (nbytes & (sizeof(char *) - 1));
 
   p = gsptr;
-/*    if ((gsptr += nbytes) - glbspace > GSPACE) */
-  if ((gsptr += nbytes) > gblend) {
+  gsptr += nbytes;
+  if ( gsptr > gblend) {
     fatal("out of global memory");
   }
-  return (p);
+  return p;
 }
-
-#else
-{
-  char *np;
-
-  if (!(np = xmalloc(nbytes, &gsptr, glbspace + GSPACE)))
-    fatal("out of global memory");
-  return (np);
-}
-
-#endif
 
 /*
   Lmalloc( nbytes )
@@ -373,34 +359,22 @@ Gmalloc(int nbytes)
 */
 char *
 Lmalloc(int nbytes)
-#ifndef help_1
 {
   char *p;
-
-
   nbytes = (nbytes + sizeof(int) - 1) & (~(sizeof(int) - 1));
 
   p = lsptr;
-  if ((lsptr += nbytes) - locspace > LSPACE) {
+  lsptr += nbytes;
+  if ( (lsptr - locspace) > LSPACE) {
     fatal("out of local memory");
   }
 
-  if (lsptr - locspace > maxloc)
+  if (lsptr - locspace > maxloc){
     maxloc = lsptr - locspace;
+  }
 
-  return (p);
+  return p;
 }
-
-#else
-{
-  char *np;
-
-  if (!(np = xmalloc(nbytes, &lsptr, locspace + LSPACE)))
-    fatal("out of local memory");
-  return (np);
-}
-
-#endif
 
 /*
   SizeOf( tarray )
@@ -426,7 +400,6 @@ SizeOf(char *tarray)
       /* jrd hacked this */
       p = (struct hashent *)(((uintptr_t)decode(tarray)) + (uintptr_t)gblspace);
       /* use offset, not addr */
-//->      printf("size %d %p\n",p->data.g,tarray);
       return (p->data.g);
     }
 

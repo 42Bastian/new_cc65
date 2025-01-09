@@ -35,7 +35,7 @@ void gettok();
 void doasm2();
 
 /* internal prototypes */
-int statement(); 
+int statement();
 void ns();
 int  compound();
 void doif();
@@ -158,10 +158,10 @@ int old_regbase;
    */
   oldsp = oursp;
   locptr = lsptr;
-  
+
   if ( (old_regbase = register_base) < 0 )
     register_base = old_regbase = REGISTER_BASE;
-   
+
   declloc();
 
   SaveRegs( old_regbase,register_base - old_regbase );
@@ -184,11 +184,11 @@ int old_regbase;
     }
 
   lsptr = locptr;
-  
+
 // restore register only if not on first level
 // there it is done by exitfun
 
-  if ( ncmp > 0 ) 
+  if ( ncmp > 0 )
   {
     RestoreRegs(old_regbase,register_base - old_regbase);
     register_base = old_regbase;
@@ -261,7 +261,7 @@ int lab;
 	}
       test(lab);
       ns();
-      
+
     }
   jump(loop);
   outcdf(lab);
@@ -279,7 +279,7 @@ void doreturn()
     expression(0);
 
   modstk(0);
-  
+
   ret(register_base - REGISTER_BASE);
 }
 
@@ -419,5 +419,3 @@ int lab = 0;
   gettok();
   gettok();
 }
-
-

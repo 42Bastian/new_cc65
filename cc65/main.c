@@ -33,8 +33,8 @@ char *frob_name(char *name, char *ext, char *buf);
 
 int compile(int n_xmacro, char *xmacro[]);
 void parse();
-struct hashent *declare(char *ptyp, int type, struct hashent *sadr);
-struct hashent *decl(char **ptyp);
+struct hashent *declare(char *ptyp, int type, struct hashent *sadr, int absdecl);
+struct hashent *decl(char **ptyp, int absdecl);
 int getsclass(int lv, int dflt);
 int gettype(int dflt, struct hashent **sptr);
 void declenum();
@@ -462,8 +462,7 @@ parse()
     }
     comma = 0;
     while (1) {
-      absdecl = 0;
-      if ((psym = declare(tarray, type, sadr)) == NULL) {
+      if ((psym = declare(tarray, type, sadr, 0)) == NULL) {
         gettok();
         break;
       }
@@ -537,20 +536,20 @@ parse()
   Construct a type array.
 */
 struct hashent *
-declare(char *ptyp, int type, struct hashent *sadr)
+declare(char *ptyp, int type, struct hashent *sadr, int absdecl)
 {
   struct hashent *psym;
 
-  psym = decl(&ptyp);
+  psym = decl(&ptyp, absdecl);
 
   if (psym && (type & T_STRUCT)) { //42BS
-      /* jrd hacked this part */
-      psym->typeptr = sadr;
-      encode(ptyp, (uintptr_t)sadr - (uintptr_t)gblspace);/* encode offset in glb mem */
-//->      printf("declare : %s of type: struct %s\n", psym->name, psym->typeptr->name);
-      *ptyp |= type;
-      ptyp += 3;
-    } else {
+    /* jrd hacked this part */
+    psym->typeptr = sadr;
+    encode(ptyp, (uintptr_t)sadr - (uintptr_t)gblspace);/* encode offset in glb mem */
+//->     printf("declare : %s of type: struct %s\n", psym->name, psym->typeptr->name);
+    *ptyp |= type;
+    ptyp += 3;
+  } else {
     *ptyp++ = type;
   }
   *ptyp = '\0';
@@ -561,8 +560,7 @@ declare(char *ptyp, int type, struct hashent *sadr)
   decl()
   Process declarators.
 */
-struct hashent *
-decl(char **ptyp)
+struct hashent * decl(char **ptyp, int absdecl)
 {
   struct expent lval;
   struct hashent *psym;
@@ -570,12 +568,12 @@ decl(char **ptyp)
 
   if (curtok == STAR) {
     gettok();
-    psym = decl(ptyp);
+    psym = decl(ptyp, absdecl);
     *(*ptyp)++ = T_PTR;
     return (psym);
   } else if (curtok == LPAREN) {
     gettok();
-    psym = decl(ptyp);
+    psym = decl(ptyp, absdecl);
     needbrack(RPAREN);
   } else {
     if (absdecl) {
@@ -787,8 +785,7 @@ declstruct(struct hashent *last, int strtype)
     type = gettype(-1, &sadr);
 
     while (1) {
-      absdecl = 0;
-      psym = declare(tarray, type, sadr);
+      psym = declare(tarray, type, sadr, 0);
 
       if (psym && psym->flag.g) {
         struct hashent *psym2 = psym;

@@ -35,8 +35,7 @@ void dumplits();
 int getsclass(int lv, int dflt);
 int gettype(int dflt, struct hashent **sptr);
 
-struct hashent *declare(char *ptyp, int type, struct hashent *sadr);
-struct hashent *decl(char **ptyp);
+struct hashent *declare(char *ptyp, int type, struct hashent *sadr, int absdecl);
 
 extern int outcnt;
 extern int stats;
@@ -98,8 +97,7 @@ declargs()
 
     type = gettype(INT, &sadr);
     while (1) {
-      absdecl = 0;
-      if ((psym = declare(tarray, type, sadr)) != NULL) {
+      if ((psym = declare(tarray, type, sadr, 0)) != NULL) {
         if (psym->flag.l == 0) {
           Error("declaration of parameter not in argument list");
           addloc(psym, tarray, SC_STACK, 0);
@@ -213,8 +211,7 @@ declloc()
       break;
     //printf("declloc : %s %d\n", sadr->name, sadr->misc);
     while (1) {
-      absdecl = 0;
-      psym = declare(tarray, type, sadr);
+      psym = declare(tarray, type, sadr, 0);
 
       {
         int siz;

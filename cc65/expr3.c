@@ -597,26 +597,11 @@ structref(struct expent *lval)
     psym = findsfld(psym->name, lval->typeptr);
   }
 
-  //printf("---\n");
-  //if (lval->e_const)
-  //printf("xpr3:var %s ", lval->e_const);
-  //if (lval->typeptr)
-  //printf("of type  %s", lval->typeptr->name);
-  //printf("\nxpr3:tag %s of type ", psym->name);
-  //if (psym->typeptr)
-  //printf("struct %s\n", psym->typeptr->name);
-  //
-  else
-    //printf("standard\n");
-    //
-    //if (psym->s_ptr)
-    //printf("member in %s\n", psym->s_ptr->name);
-
-    if ((psym->flag.g & 0xFF) != SC_SFLD) {
-      Need("struct field");
-      lval->e_tptr = type_int;
-      return (0);
-    }
+  if ((psym->flag.g & 0xFF) != SC_SFLD) {
+    Need("struct field");
+    lval->e_tptr = type_int;
+    return (0);
+  }
 
   lval->e_const = psym->data.g;
   lval->typeptr = psym->typeptr;

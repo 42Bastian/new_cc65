@@ -26,7 +26,7 @@ extern int debug;
 #define HTABSZ		512
 #define MACARGSZ	64
 #define MAXFILES	6  /* changed from 3 42BS */
-#define MAXTYPELEN	30
+#define MAXTYPELEN	64
 #define N_IFDEF		5
 /* #define LITLAB		1 */
 
@@ -36,8 +36,8 @@ extern int litspace;		/* total string space used */
 
 
 /* cross-compiler... */
-#define GSPACE		(128*1024)
-#define LSPACE		(128*1024)
+#define GSPACE		(256*1024)
+#define LSPACE		(256*1024)
 #define OUTQSZ		(80*1024)
 
 #define printmsg printf
@@ -200,7 +200,6 @@ extern struct hashent * htab[HTABSZ];
 extern char *		macarg[MACARGSZ];
 extern char *		machtab[HTABSZ];
 
-extern int	absdecl;
 /* extern int	critic; */
 extern int	glblbl;
 

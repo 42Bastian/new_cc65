@@ -24,6 +24,7 @@ int hie10(struct expent *lval);
 int hie_internal(struct op_alist *ops, struct expent *lval, int (*hienext) ());
 int isconst(struct expent *lval1, struct expent *lval2, char *svptr);
 void getoprnd(int (*func) (), struct expent *lval);
+void needtok(int token,char * msg);
 /*expr3.c*/
 int hie11(struct expent *lval);
 void exprhs(int k, struct expent *lval);
@@ -35,7 +36,7 @@ void liconst(int cnst);
 void needbrack(int btype);
 void store(struct expent *lval);
 /*main.c*/
-struct hashent *declare(char *ptyp, int type, struct hashent *sadr);
+struct hashent *declare(char *ptyp, int type, struct hashent *sadr, int absdecl);
 int gettype(int dflt, struct hashent **sptr);
 /*symtab.c*/
 int SizeOf(char *tarray);
@@ -325,14 +326,22 @@ hie10(struct expent *lval)
       }
     case SIZEOF:
       {
-        gettok();               /* CHAR ............VOID */
-        if ((curtok == LPAREN) && (nxttok >= 20) && (nxttok <= 29)) {
+        gettok();
+        if ((curtok == LPAREN) && (nxttok >= CHAR) && (nxttok <= VOID)) {
           char tarray1[MAXTYPELEN];
-
           gettok();
-          type = gettype(-1, &sadr);
-          absdecl = 1;
-          declare(tarray1, type, sadr);
+          if ( curtok == STRUCT || curtok == UNION ){
+            gettok();
+            if ( curtok != IDENT ){
+              Missing("tag");
+            }
+            type = T_STRUCT;
+            sadr = (struct hashent *)curval;
+            declare(tarray1, type, sadr, 0);
+          } else {
+            type = gettype(-1, &sadr);
+            declare(tarray1, type, sadr, 1);
+          }
           needbrack(RPAREN);
           lval->e_const = SizeOf(tarray1);
         } else {
@@ -345,15 +354,12 @@ hie10(struct expent *lval)
       }
     default:
       /* casting ... */
-      if ((curtok == LPAREN) && (nxttok >= 20) && (nxttok <= 29)) {
+      if ((curtok == LPAREN) && (nxttok >= CHAR) && (nxttok <= VOID)) {
         char tarray2[MAXTYPELEN];
-
-
         gettok();
         type = gettype(-1, &sadr);
 
-        absdecl = 1;
-        declare(tarray2, type, sadr);
+        declare(tarray2, type, sadr, 1);
         needbrack(RPAREN);
 
         k = hie10(lval);

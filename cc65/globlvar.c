@@ -10,7 +10,6 @@ uintptr_t curval;                     /* something or other, depending on curtok
 uintptr_t nxttok;
 uintptr_t nxtval;
 
-int absdecl;
 /* int  critic;         */
 int glblbl;
 char *gsptr;
