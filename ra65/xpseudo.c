@@ -549,17 +549,23 @@ void ldax()
   else
     {
       val = eval(p.arg[0]+1, &e_flags, &sy);
-      genlit(0xA9);             /* lda immed */
+      genlit(0xA9);             /* lda #immed */
       if (e_flags & E_REL)
         genbyte(val, e_flags | E_LO_BYTE, sy);
       else
         genlit(val & 0xFF);
 
-      genlit(0xA2);             /* ldx immed */
-      if (e_flags & E_REL)
+      if (e_flags & E_REL){
+        genlit(0xA2);             /* ldx #immed */
         genbyte(val, e_flags | E_HI_BYTE, sy);
-      else
-        genlit(val >> 8);
+      } else {
+        if ( (val >> 8) == (val & 0xff)){
+          genlit(0xaa); /* tax */
+        } else {
+          genlit(0xA2);             /* ldx #immed */
+          genlit(val >> 8);
+        }
+      }
     }
 }
 void ldau()
