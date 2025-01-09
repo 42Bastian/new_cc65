@@ -227,11 +227,12 @@ main(int argc, char **argv)
       while (!end_file && read_line(inf, line)) {
 	line_nbr++;
 
-	if (verbose)
+	if (verbose){
 	  if (disabled)
 	    printf("%4d:<%s>\n", line_nbr, line);
 	  else
 	    printf("%4d:'%s'\n", line_nbr, line);
+        }
 #ifdef LIST
 	line_listed_p = 0;
 #endif

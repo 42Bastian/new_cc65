@@ -8,7 +8,7 @@
 /* the input line parser */
 #include <stdio.h>
 #include <string.h>
-
+#include <stdint.h>
 #include "parse.h"
 
 extern short asm_var;

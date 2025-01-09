@@ -347,12 +347,12 @@ assemble_op(int basecode, int valid, char **args)
    returned as the function value;
 */
 int
-decode_operand(valid, operand, expr_flags, rel_to_sym, args)
-     int valid;                 /* mask of valid types */
-     int *operand;
-     int *expr_flags;
-     struct sym **rel_to_sym;
-     char *args[];
+decode_operand(
+               int valid,                 /* mask of valid types */
+               int *operand,
+               int *expr_flags,
+               struct sym **rel_to_sym,
+               char *args[])
 {
   int val;
   int e_flags;                  /* flags from eval */

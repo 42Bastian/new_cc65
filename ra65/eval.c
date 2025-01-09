@@ -60,11 +60,11 @@ grok_fixnum(char *str, int base, int *result)
 
 /* eval one q, return updated string ptr */
 char *
-eval_q(str, val, expr_flags, sym_ref)
-  char *str;
-  int *val;
-  int *expr_flags;
-  SYM **sym_ref;
+eval_q(
+       char *str,
+       int *val,
+       int *expr_flags,
+       SYM **sym_ref)
 {
   char c;
   char *p;
@@ -119,7 +119,7 @@ eval_q(str, val, expr_flags, sym_ref)
       }
 
       if ((!(sy->flags & DEFINED)) && (pass == 1) && !(sy->flags & GLOBAL))
-	barf("undefined symbol '%s'", (int)tbuf, 0, 0);
+	barf("undefined symbol '%s'", (uintptr_t)tbuf, 0, 0);
 
       if (*expr_flags & E_REL) {
 	barf("Expression with >1 rel. symbols !", 0, 0, 0);
@@ -214,29 +214,28 @@ eval_product(char *str, int *val, int *expr_flags, SYM * *sym_ref)
 
     if (op == '*')
       accum *= dummy;
-    if (op == '/')
+    if (op == '/'){
       if (val)
 	accum /= dummy;
       else
 	barf("Division by Zero", 0, 0, 0);
+    }
 
-    while (white_p(*str))
+    while (white_p(*str)){
       str++;
+    }
   }
   *val = accum;
   return (str);
 }
 
-char *
-eval_internal(str, val, expr_flags, sym_ref)
-  char *str;
-  int *val;
-  int *expr_flags;
-  SYM **sym_ref;
+char * eval_internal(char *str,
+                     int *val,
+                     int *expr_flags,
+                     SYM **sym_ref)
 {
   int accum = 0, dummy = 0;
   char op;
-
 
 /* eval. multiplication/division */
   str = eval_product(str, &accum, expr_flags, sym_ref);

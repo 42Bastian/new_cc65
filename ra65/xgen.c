@@ -46,7 +46,7 @@ struct frag {
 
 /* prototypes */
 void barf(char *msg, int arg1, int arg2, int arg3);
-void map_syms(void (*fun) ());
+void map_syms(void (*fun) (SYM *));
 
 void out16(int i);
 void out8(char i);

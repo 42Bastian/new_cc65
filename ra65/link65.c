@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <string.h>
+#include <stdint.h>
 #ifdef UNIX
 #include <unistd.h>
 #endif
@@ -46,12 +47,11 @@
 /* prototypes */
 
 void print_copyleft();
-
 unsigned char read8();
-USHORT read16();
+uint16_t read16();
 void readskip(int nbytes);
 void write8(unsigned char ch);
-void write16(USHORT sh);
+void write16(uint16_t sh);
 int open_carefully(char *name, int mode);
 int read_header();
 int iswhite(char c);
@@ -98,7 +98,7 @@ struct obj_module {
   int lib_idx;                  /* if libr file, the module nbr in the lib */
   struct segmentS seg[4];
   int nsyms;
-  USHORT *symflags;
+  uint16_t *symflags;
   struct sym **syms;            /* vector of pointers to symbols */
 };
 
@@ -174,7 +174,7 @@ read8()
   return (foo);
 }
 
-USHORT
+uint16_t
 read16()
 {
   return (read8() | (read8() << 8));
@@ -193,7 +193,7 @@ write8(unsigned char ch)
 }
 
 void
-write16(USHORT sh)
+write16(uint16_t sh)
 {
   write8(sh & 0xFF);
   write8(sh >> 8);
@@ -223,7 +223,7 @@ open_carefully(char *name, int mode)
 int
 read_header()
 {
-  USHORT typ;
+  uint16_t typ;
 
   typ = read16();               /* get the header word */
   if (debug)
@@ -422,7 +422,7 @@ digest_object_file(char *name, int module)
   m->seg_type = rf.header;
   m->nsyms = rf.n_sym;
   m->syms = (struct sym **)malloc(m->nsyms * sizeof(struct sym *));
-  m->symflags = (USHORT *) malloc(m->nsyms * sizeof(USHORT));
+  m->symflags = (uint16_t *) malloc(m->nsyms * sizeof(uint16_t));
 
   for (j = 0; j < rf.n_sym; j++) {
     k = (int)read8();           /* size of symbol name */
@@ -447,7 +447,7 @@ void
 adjust_abs_symbols(struct obj_module *m)
 {
   int j;
-  USHORT symflags;
+  uint16_t symflags;
 
   for (j = 0; j < m->nsyms; j++) {
     symflags = m->symflags[j];

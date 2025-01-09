@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #ifdef UNIX
 #include <unistd.h>
@@ -24,7 +25,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>           /* for _dta, for file size */
 
-#define USHORT unsigned short
 #ifndef O_BINARY
 #define O_BINARY 0
 #endif
@@ -36,9 +36,9 @@
 void barf(char *msg, char *arg1, char *arg2, char *arg3);
 int min(int x, int y);
 unsigned char read8(int input_fd);
-USHORT read16(int input_fd);
+uint16_t read16(int input_fd);
 void write8(char ch);
-void write16(USHORT sh);
+void write16(uint16_t sh);
 int open_carefully(char *name, int mode, int must_exist);
 void read_header(int fd);
 void read_mdesc(int fd, struct librmod *mod);
@@ -66,26 +66,24 @@ int input_fd;                   /* fd of obj files we read */
 
 struct entry {
   char e_name[12];              /* the file name of this entry */
-  USHORT e_nbytes;              /* nbytes this entry */
+  uint16_t e_nbytes;              /* nbytes this entry */
   struct entry *e_next;         /* next entry */
   int new;                      /* if this is a new entry */
   int skip;                     /* this is an old entry being skipped */
 };
 
 #define SKIP_REPLACE    1
-#define SKIP_DELETE       2
+#define SKIP_DELETE     2
 
-char *skip_names[] =
-  {
-    "", "Replacing", "Deleting"
-  };
+char *skip_names[] = {
+  "", "Replacing", "Deleting"
+};
 
 struct entry *lfile_components;
 
 /* util routines */
 
-int
-min(int x, int y)
+int min(int x, int y)
 {
   if (x < y)
     return (x);
@@ -93,35 +91,31 @@ min(int x, int y)
     return (y);
 }
 
-unsigned char
-read8(int input_fd)
+unsigned char read8(int input_fd)
 {
   unsigned char foo;
   read(input_fd, &foo, 1);
   return (foo);
 }
 
-USHORT
-read16(int input_fd)
+uint16_t read16(int input_fd)
 {
   return (read8(input_fd) | (read8(input_fd) << 8));
 }
 
-void
-write8(char ch)
+void write8(char ch)
 {
   write(out_lfd, &ch, 1);
 }
 
 void
-write16(USHORT sh)
+write16(uint16_t sh)
 {
   write8(sh & 0xFF);
   write8(sh >> 8);
 }
 
-int
-open_carefully(char *name, int mode, int must_exist)
+int open_carefully(char *name, int mode, int must_exist)
 {
 
   int fd;
@@ -135,8 +129,7 @@ open_carefully(char *name, int mode, int must_exist)
   return (fd);
 }
 
-void
-read_header(int fd)
+void read_header(int fd)
 {
   lfile.l_header = read16(fd);
   lfile.type = read16(fd);
@@ -145,8 +138,7 @@ read_header(int fd)
 
 }
 
-void
-read_mdesc(int fd, struct librmod *mod)
+void read_mdesc(int fd, struct librmod *mod)
 {
   read(fd, mod->m_name, 12);
   mod->m_nbytes = read16(fd);
@@ -155,8 +147,7 @@ read_mdesc(int fd, struct librmod *mod)
 /* build the module list for an existing file.  assume the next byte
    to be read is the first one of the module structs.  assume lfile
    is valid */
-void
-build_modlist(int fd)
+void build_modlist(int fd)
 {
   int i;
   struct entry *elt;
@@ -185,34 +176,22 @@ build_modlist(int fd)
   }
 }
 
-void
-string_upcase(char *str)
+void string_upcase(char *str)
 {
   for (; *str; str++)
     if (islower(*str))
       *str = toupper(*str);
 }
 
-int
-string_equal(char *str1, char *str2)
+int string_equal(char *str1, char *str2)
 {
   for (; *str1 || *str2; str1++, str2++)
     if (*str1 != *str2)
       return (0);
   return (1);
 }
-/* not needed?
-   char * string_copy(str)
-   char * str;
-   {
-   char * t = (char * )malloc(strlen(str) + 1);
-   strcpy(t, str);
-   return(t);
-   }
-*/
 
-void
-string_pad(char *target, char *source, int nbytes)
+void string_pad(char *target, char *source, int nbytes)
 {
   int i;
 
@@ -222,8 +201,7 @@ string_pad(char *target, char *source, int nbytes)
     *target++ = ' ';
 }
 
-void
-string_trim(char *target, char *source, int nbytes)
+void string_trim(char *target, char *source, int nbytes)
 {
 
   for (; ((nbytes > 0) && (*source != ' ')); nbytes--)
@@ -233,8 +211,7 @@ string_trim(char *target, char *source, int nbytes)
 
 /* maintaining entry list */
 
-struct entry *
-last_entry()
+struct entry * last_entry()
 {
   struct entry *elt;
 
@@ -245,10 +222,7 @@ last_entry()
 
 /* delete an entry.  return 1 if found it */
 
-int
-del_entry(name, why)
-     char *name;
-     int why;
+int del_entry(char *name, int why)
 {
   struct entry *elt;
   char buf[80];
@@ -272,10 +246,7 @@ del_entry(name, why)
 }
 
 /* return 1 if replaced old entry */
-int
-add_entry(name, nbytes)
-     char *name;
-     int nbytes;
+int add_entry( char *name, int nbytes)
 {
   struct entry *elt;
   struct entry *prev_elt;
@@ -307,9 +278,7 @@ add_entry(name, nbytes)
 /* on 800, this will have to read and count the whole file,
    unless we're using Spartados */
 
-int
-file_nbytes(name)
-     char *name;
+int file_nbytes(char *name)
 {
 
   struct stat st;
@@ -321,10 +290,7 @@ file_nbytes(name)
 }
 
 /* zzz */
-
-
-void
-barf(char *msg, char *arg1, char *arg2, char *arg3)
+void barf(char *msg, char *arg1, char *arg2, char *arg3)
 {
   fprintf(stderr, (char *)msg, arg1, arg2, arg3);
   fprintf(stderr, "\n");
@@ -333,9 +299,7 @@ barf(char *msg, char *arg1, char *arg2, char *arg3)
 
 
 /* open libr and generate the initial components list */
-void
-read_library(must_exist)
-     int must_exist;
+void read_library(int must_exist)
 {
 
   lfile_components = (struct entry *)NULL;
@@ -359,8 +323,7 @@ read_library(must_exist)
 
 /* using the components_list, write a new library */
 
-void
-write_library()
+void write_library()
 {
   struct entry *elt;
   int copy_lfd;
@@ -440,10 +403,7 @@ write_library()
 
 /* routines to really do things */
 
-void
-add_files(argc, argv)
-     int argc;
-     char **argv;
+void add_files(int argc, char **argv)
 {
   int i, nbytes, found;
 
@@ -468,10 +428,7 @@ add_files(argc, argv)
 }
 
 /* delete some library members */
-void
-del_files(argc, argv)
-     int argc;
-     char **argv;
+void del_files(int argc,char **argv)
 {
   int i, deleted;
 
@@ -490,8 +447,7 @@ del_files(argc, argv)
   close(in_lfd);
 }
 
-void
-list_library()
+void list_library()
 {
   struct entry *elt;
   char buf[14];
@@ -508,8 +464,7 @@ list_library()
   }
 }
 
-void
-print_version()
+void print_version()
 {
   printf("Libr65 v %s\n", VERSION);
 }
@@ -517,10 +472,7 @@ print_version()
 /* main body */
 
 
-int
-main(argc, argv)
-     int argc;
-     char **argv;
+int main(int argc,char **argv)
 {
   char op;                      /* what we're doing to a file */
 
@@ -548,7 +500,7 @@ main(argc, argv)
     print_version();
     break;
   default:
-    barf("I don't understand option '%c'", (char *)(int)op, "", "");
+    barf("I don't understand option '%c'", (char *)(uintptr_t)op, "", "");
   }
   exit(0);
 }

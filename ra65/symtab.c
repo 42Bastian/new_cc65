@@ -199,9 +199,8 @@ describe_symtab()
 }
 
 void
-map_syms(void (*fun) ())
+map_syms(void (*fun) (SYM *))
 {
-
   SYM *sym_p;
   int i;
 
@@ -212,7 +211,9 @@ map_syms(void (*fun) ())
     }
   }
 }
+
 extern char *in_name[];
+
 int find_udef()
 {
   SYM *sym_p;

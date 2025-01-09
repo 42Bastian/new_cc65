@@ -60,7 +60,7 @@ ID char list_p;			/* generating listing */
 
 ID char verbose;			/* various verbosities */
 
-char *frob_name();
+char *frob_name(char *);
 
 ID short asm_var;   /* "@" in a label is replaced by this value */
 ID short CurrSegment;         /* which segment we're in */
