@@ -120,25 +120,24 @@ konst3(int k)
   olstrdnl("\tLDY\t#", k);
 }
 
-char efn[] = {'e', 'n', 't', 'e', 'r', 'f', 'u', 'n'};
-char efn_n = ' ';
-char efn_0 = 0;
+char efn[] = "enterfun ";
 
 void
 startfun(char *name, int flag)
 {
   if (n_funargs == -1)
     printf("Internal error! no argcount?\n");
+
   outgblc(name);                /* print a global name with colon */
-  if (findmac("FIXARGC"))
+
+  efn[8] = 0;
+  if (findmac("FIXARGC")){
     if (n_funargs <= 8) {
-      efn_n = n_funargs + '0';
+      efn[8] = n_funargs + '0';
     } else {
       konst3(n_funargs);
-      efn_n = 0;
     }
-  else
-    efn_n = 0;
+  }
   if (flag)
     oljsr(efn);
 }
@@ -246,7 +245,6 @@ getladr(int offs)
 void
 getloc(int offs, char *tptr)
 {
-
   //konst3s(offs);              /* load Y with offset value */
 
 #ifdef UNSIGNED_FIX
@@ -271,7 +269,6 @@ getloc(int offs, char *tptr)
 #else
   oljsr((char_t_p(tptr) ? "ldaysp" : "ldaxysp"));
 #endif
-
 }
 
 /*
@@ -335,7 +332,6 @@ putlmem(int lab, char *tptr)
 void
 putstk(struct expent *lval)
 {
-
   if ((lval->e_flags == E_MEOFFS) &&    /* some kind of structure */
       (lval->e_const != 0)) {   /* and not first slot... */
     konst3(lval->e_const);      /* load Y with structure offset */
@@ -396,9 +392,6 @@ indirect(struct expent *lval)
 void
 save()
 {
-  /*
-   * ol("\tstx\t<(svax+1)\n" "\tsta\t<svax");
-   */
   ol("\tpha\n\tphx");
 }
 /*
@@ -409,9 +402,6 @@ save()
 void
 rstr()
 {
-  /*
-   * ol("\tldx\t<(svax+1)\n" "\tlda\t<(svax)");
-   */
   ol("\tplx\n\tpla");
 }
 
@@ -420,7 +410,7 @@ rstr()
   Print partial instruction to get an immediate value
   into the primary register.
 */
-char LDAX[] = "\tldax\t#\0";
+char LDAX[] = "\tldax\t#";
 
 void
 immed(int i)
